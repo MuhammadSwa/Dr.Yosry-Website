@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import { contactInfo } from "../data";
+import { contactInfo } from "../lib/data";
 
 export default function ContactForm() {
   const [formData, setFormData] = createSignal({
