@@ -28,27 +28,8 @@ export const lessonsData = [
   { title: "مجالس الذكر", date: "2023-09-20", image: "https://placehold.co/600x400/047857/white?text=Dhikr" },
 ];
 
-export const booksData = [
-  { title: "كتاب التوحيد", image: "https://placehold.co/300x450/d97706/white?text=Book+1" },
-  { title: "الفقه الميسر", image: "https://placehold.co/300x450/d97706/white?text=Book+2" },
-  { title: "السيرة النبوية", image: "https://placehold.co/300x450/d97706/white?text=Book+3" },
-  { title: "الشمائل المحمدية", image: "https://placehold.co/300x450/d97706/white?text=Book+4" },
-];
 
 // YouTube Channel Data
-export const youtubeData = {
-  channelUrl: "https://www.youtube.com/@dryosrygabr",
-  channelHandle: "@dryosrygabr",
-  // Latest videos - replace with actual video IDs
-  videos: [
-    { id: "dQw4w9WgXcQ", title: "درس في التفسير - سورة البقرة" },
-    { id: "dQw4w9WgXcQ", title: "شرح الحديث النبوي الشريف" },
-    { id: "dQw4w9WgXcQ", title: "مجلس الذكر والإنشاد" },
-    { id: "dQw4w9WgXcQ", title: "فقه العبادات - أحكام الصلاة" },
-    { id: "dQw4w9WgXcQ", title: "السيرة النبوية - الهجرة إلى المدينة" },
-    { id: "dQw4w9WgXcQ", title: "أسئلة وأجوبة في الفقه" },
-  ]
-};
 
 // Social Media Links
 export const socialLinks = {
