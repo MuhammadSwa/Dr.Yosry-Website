@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import { contactInfo } from "../data";
 
-export default function Contact() {
+export default function ContactForm() {
   const [formData, setFormData] = createSignal({
     name: "",
     email: "",
@@ -28,7 +28,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" class="py-20 bg-gradient-to-l from-emerald-900 via-emerald-800 to-emerald-950 relative overflow-hidden">
+    <section id="contact" class="py-20 pt-32 bg-gradient-to-l from-emerald-900 via-emerald-800 to-emerald-950 relative overflow-hidden">
 
       {/* 1. Background Pattern */}
       <div class="absolute inset-0 opacity-10 pointer-events-none">

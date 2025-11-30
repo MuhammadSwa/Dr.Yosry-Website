@@ -1,80 +1,80 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/Navbar.astro";
-import Footer from "../components/Footer.astro";
-import { Image } from 'astro:assets';
+import DorarNaqia from '../assets/books_covers/dorar_naqia_cover.png'
+import AlanwarAlgalia from '../assets/books_covers/alanwar_algalia_cover.png'
+import Alhadra from '../assets/books_covers/alhadra_cover.png'
+import IrshadAlbariya from '../assets/books_covers/irshad_albariyat_hukm_eatayiya_cover.png'
+import AlfutuhatAlyasria from '../assets/books_covers/alfutuhat_alyasriat_eaqayid_alumat_almuhamadia_cover.png'
+import SharhSalawatAlawlia from '../assets/books_covers/sharh_salawat_alawlia_ealaa_khatam_alanbia_cover.png'
+import FathAlrahman from '../assets/books_covers/fath_alrahman_mutuwn_ahl_alfiqh_waleirfan_cover.png'
 
-// Placeholder for book cover (You should replace these with actual imports)
-// import bookCover1 from "../assets/books/book1.jpg"; 
-// using a placeholder function for demo
-const getCover = (id: number) => `https://placehold.co/400x600/064e3b/d97706?text=Book+${id}&font=playfair`;
+type Book = {
+  title: string;
+  category: string;
+  description?: string;
+  pages: string;
+  year?: string;
+  image: string;
+  pdfLink?: string;
+  buyLink?: string;
+}
 
-const books = [
+const books: Book[] = [
   {
-    id: 1,
-    title: "في رحاب التفسير",
-    category: "التفسير وعلوم القرآن",
-    description: "موسوعة تفسيرية شاملة تجمع بين دقة اللفظ وعمق المعنى، مع إسقاطات واقعية معاصرة.",
-    pages: "540 صفحة",
+    title: "الدرر النقية في أوراد الطريقة اليسرية الصديقية الشاذلية",
+    category: "أذكار",
+    description: "مجموعةُ أورادٍ وصلواتٍ ومناجاةٍ ووظائف في الطريقة اليسرية الصِّدِّيقِيَّةِ الدَّرْقَاوِيَّةِ الشَّاذِلِيَّةِ وملحقات أخرى منها (الصلوات اليسرية على خير البرية وشرحها بصلوات الأسماء الحسنى).",
+    pages: "328",
     year: "2023",
-    image: getCover(1),
-    pdfLink: "#",
-    buyLink: "#"
+    image: DorarNaqia.src,
+    pdfLink: "https://archive.org/download/dorar_app_book/dorar_awrad.pdf",
   },
   {
-    id: 2,
-    title: "الأنوار المحمدية",
-    category: "السيرة النبوية",
-    description: "دراسة تحليلية في الشمائل المحمدية والسيرة العطرة، بأسلوب يجمع بين الرواية والدراية.",
-    pages: "320 صفحة",
+    title: "الأنوار الجلية في الجمع بين دلائل الخيرات والصلوات اليسرية",
+    category: "أذكار",
+    pages: "270 صفحة",
     year: "2022",
-    image: getCover(2),
-    pdfLink: "#",
-    buyLink: "#"
+    image: AlanwarAlgalia.src,
+    pdfLink: "https://archive.org/download/dorar_app_book/anwar_galia.pdf",
   },
   {
-    id: 3,
-    title: "منهج السائرين",
+    title: "الحضرة اليسرية الصديقية الشاذلية",
+    category: "أذكار",
+    pages: "56 صفحة",
+    image: Alhadra.src,
+    pdfLink: "https://archive.org/download/dorar_app_book/dorar_alhadra.pdf",
+  },
+  {
+    title: "إرشاد البرية إلى بعض معاني الحكم العطائية",
     category: "التزكية والتصوف",
-    description: "خارطة طريق للمريد في سلوكه إلى الله، مستنبطة من الكتاب والسنة وأقوال العارفين.",
-    pages: "280 صفحة",
+    pages: "572 صفحة",
+    year: "2023",
+    image: IrshadAlbariya.src,
+    pdfLink: "https://archive.org/download/dorar_app_book/irshad_albariyat_hukm_eatayiya.pdf",
+  },
+  {
+    title: "الفتوحات اليسرية في شرح عقائد الأمة المحمدية",
+    category: "عقيدة",
+    pages: "288 صفحة",
+    year: "2022",
+    image: AlfutuhatAlyasria.src,
+    pdfLink: "https://archive.org/download/dorar_app_book/alfutuhat_alyasriat_eaqayid_alumat_almuhamadia.pdf",
+  },
+  {
+    title: "شرح صلوات الأولياء",
+    category: "التزكية والتصوف",
+    pages: "580 صفحة",
     year: "2021",
-    image: getCover(3),
-    pdfLink: "#",
-    buyLink: "#"
-  },
+    image: SharhSalawatAlawlia.src,
+    pdfLink: "https://archive.org/download/dorar_app_book/sharh_salawat_alawlia_ealaa_khatam_alanbia.pdf",
+    },
   {
-    id: 4,
-    title: "فقه المعاملات المعاصر",
-    category: "الفقه الإسلامي",
-    description: "رؤية فقهية مؤصلة للقضايا المالية المستجدة في العصر الحديث.",
-    pages: "450 صفحة",
-    year: "2020",
-    image: getCover(4),
-    pdfLink: "#",
-    buyLink: "#"
-  },
-  {
-    id: 5,
-    title: "جواهر الحكم",
-    category: "المواعظ والرقائق",
-    description: "مجموعة من الحكم والمواعظ المختارة التي ترقق القلوب وتزكي النفوس.",
-    pages: "200 صفحة",
-    year: "2019",
-    image: getCover(5),
-    pdfLink: "#",
-    buyLink: "#"
-  },
-  {
-    id: 6,
-    title: "شرح الأربعين النووية",
-    category: "الحديث الشريف",
-    description: "شرح مبسط وعميق للأحاديث الجامعة التي عليها مدار الإسلام.",
-    pages: "380 صفحة",
-    year: "2018",
-    image: getCover(6),
-    pdfLink: "#",
-    buyLink: "#"
+    title: "فَتْحُ الرَّحْمَن في شرح متون أهل الفقه والعرفان",
+    category: "فقه وتصوف",
+    pages: "342 صفحة",
+    year: "2022",
+    image: FathAlrahman.src,
+    pdfLink: "https://archive.org/download/dorar_app_book/fath_alrahman_mutuwn_ahl_alfiqh_waleirfan.pdf",
   }
 ];
 ---
@@ -118,7 +118,7 @@ const books = [
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         
         {books.map((book, index) => (
-          <div class="group relative bg-white/5 border border-emerald-500/20 rounded-2xl p-6 hover:border-amber-400/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-950/50 backdrop-blur-sm">
+          <div class="group relative bg-white/5 border border-emerald-500/20 rounded-2xl p-6 hover:border-amber-400/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-950/50 backdrop-blur-sm flex flex-col">
             
             <!-- Book Cover Container -->
             <div class="relative w-full aspect-[2/3] mb-8 perspective-1000">
@@ -142,7 +142,7 @@ const books = [
             </div>
 
             <!-- Content -->
-            <div class="text-center relative">
+            <div class="text-center relative flex-1 flex flex-col">
               <!-- Category Badge -->
               <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-emerald-950 border border-emerald-500/30 px-4 py-1 rounded-full text-xs text-amber-300 font-bold shadow-lg">
                 {book.category}
@@ -152,34 +152,54 @@ const books = [
                 {book.title}
               </h3>
               
-              <p class="text-emerald-100/70 text-sm leading-loose mb-6 font-cairo line-clamp-3">
-                {book.description}
-              </p>
+              {/* Optional Description */}
+              {book.description && (
+                <p class="text-emerald-100/70 text-sm leading-loose mb-6 font-cairo line-clamp-3">
+                  {book.description}
+                </p>
+              )}
 
-              <!-- Meta Data -->
-              <div class="flex justify-center items-center gap-4 text-xs text-emerald-400/80 mb-6 border-t border-white/5 pt-4">
-                <span class="flex items-center gap-1">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                  {book.year}
-                </span>
-                <span class="h-1 w-1 rounded-full bg-emerald-500"></span>
+              <!-- Meta Data (Year & Pages) -->
+              <div class="mt-auto flex justify-center items-center gap-4 text-xs text-emerald-400/80 mb-6 border-t border-white/5 pt-4">
+                {/* Optional Year */}
+                {book.year && (
+                  <>
+                    <span class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      {book.year}
+                    </span>
+                    <span class="h-1 w-1 rounded-full bg-emerald-500"></span>
+                  </>
+                )}
+                
+                {/* Pages (Always visible if exists) */}
                 <span class="flex items-center gap-1">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                   {book.pages}
                 </span>
               </div>
 
-              <!-- Actions -->
-              <div class="flex gap-3 justify-center">
-                <a href={book.pdfLink} class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg font-bold text-sm transition-colors border border-white/10 flex items-center justify-center gap-2 group/btn">
-                  <svg class="w-4 h-4 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                  تحميل PDF
-                </a>
-                <a href={book.buyLink} class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-2 rounded-lg font-bold text-sm transition-all shadow-lg shadow-amber-900/20 flex items-center justify-center gap-2">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                  شراء الورقي
-                </a>
-              </div>
+              <!-- Actions (Conditional Rendering) -->
+              {(book.pdfLink || book.buyLink) && (
+                <div class="flex gap-3 justify-center">
+                  
+                  {book.pdfLink && (
+                    <a href={book.pdfLink} target="_blank"
+ class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg font-bold text-sm transition-colors border border-white/10 flex items-center justify-center gap-2 group/btn">
+                      <svg class="w-4 h-4 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                      تحميل PDF
+                    </a>
+                  )}
+
+                  {book.buyLink && (
+                    <a href={book.buyLink} class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-2 rounded-lg font-bold text-sm transition-all shadow-lg shadow-amber-900/20 flex items-center justify-center gap-2">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                      شراء الورقي
+                    </a>
+                  )}
+                  
+                </div>
+              )}
             </div>
           </div>
         ))}

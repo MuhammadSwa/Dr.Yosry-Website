@@ -1,146 +1,112 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-// Data Structure for Social Links
-const socialMedia = [
-  // --- Facebook Section ---
-  {
-    id: "fb-ar",
-    platform: "Facebook",
-    title: "فيسبوك (العربية)",
-    handle: "@DrYosryGabr",
-    url: "https://www.facebook.com/DrYosryGabr", // Replace with actual
-    color: "hover:border-blue-500 hover:shadow-blue-500/20",
-    iconColor: "group-hover:text-blue-500",
-    bgHover: "group-hover:bg-blue-500/10",
-    description: "الصفحة الرسمية باللغة العربية",
-    icon: "facebook"
-  },
-  {
-    id: "fb-en",
-    platform: "Facebook",
-    title: "Facebook (English)",
-    handle: "@DrYosryGabrEn",
-    url: "#", 
-    color: "hover:border-blue-400 hover:shadow-blue-400/20",
-    iconColor: "group-hover:text-blue-400",
-    bgHover: "group-hover:bg-blue-400/10",
-    description: "The Official Page in English",
-    icon: "facebook"
-  },
-  {
-    id: "fb-group",
-    platform: "Facebook Group",
-    title: "مجموعة محبي الشيخ",
-    handle: "Official Group",
-    url: "#",
-    color: "hover:border-indigo-500 hover:shadow-indigo-500/20",
-    iconColor: "group-hover:text-indigo-500",
-    bgHover: "group-hover:bg-indigo-500/10",
-    description: "للنقاشات والتواصل بين الطلاب",
-    icon: "users"
-  },
-  {
-    id: "fb-awrad",
-    platform: "Facebook Page",
-    title: "أوراد الطريقة الصديقية",
-    handle: "Awrad Page",
-    url: "#",
-    color: "hover:border-emerald-400 hover:shadow-emerald-400/20",
-    iconColor: "group-hover:text-emerald-400",
-    bgHover: "group-hover:bg-emerald-400/10",
-    description: "صفحة خاصة بالأوراد والأذكار",
-    icon: "book"
-  },
+type SocialIcon =
+  | "facebook"
+  | "instagram"
+  | "youtube"
+  | "soundcloud"
+  | "telegram"
+  | "twitter"
+  | "tiktok";
 
-  // --- Instagram Section ---
-  {
-    id: "ig-ar",
-    platform: "Instagram",
-    title: "انستجرام (العربية)",
-    handle: "@dryosrygabr",
-    url: "#",
-    color: "hover:border-pink-500 hover:shadow-pink-500/20",
-    iconColor: "group-hover:text-pink-500",
-    bgHover: "group-hover:bg-pink-500/10",
-    description: "مقاطع قصيرة وصور حصرية",
-    icon: "instagram"
-  },
-  {
-    id: "ig-en",
-    platform: "Instagram",
-    title: "Instagram (English)",
-    handle: "@dryosrygabr.en",
-    url: "#",
-    color: "hover:border-purple-500 hover:shadow-purple-500/20",
-    iconColor: "group-hover:text-purple-500",
-    bgHover: "group-hover:bg-purple-500/10",
-    description: "Short clips & quotes in English",
-    icon: "instagram"
-  },
+type SocialLink = {
+  title: string;
+  url: string;
+  icon: SocialIcon;
+  color: string;
+  iconColor: string;
+  bgHover: string;
+};
 
-  // --- Media & Video ---
+// --- Unified Color Presets ---
+const colorPresets: Record<SocialIcon, string> = {
+  facebook: "blue-500",
+  instagram: "pink-500",
+  youtube: "red-500",
+  soundcloud: "orange-500",
+  telegram: "sky-500",
+  twitter: "gray-400",
+  tiktok: "cyan-400",
+};
+
+// Helper to generate classes
+const withColor = (icon: SocialIcon) => {
+  const c = colorPresets[icon];
+  return {
+    color: `hover:border-${c} hover:shadow-${c}/20`,
+    iconColor: `group-hover:text-${c}`,
+    bgHover: `group-hover:bg-${c}/10`,
+  };
+};
+
+// --- SocialLinks Data (clean!) ---
+const socialMedia: SocialLink[] = [
   {
-    id: "youtube",
-    platform: "YouTube",
+    title: "الصفحة الرسمية لفضيلة أ.د. يسري جبر",
+    url: "https://www.facebook.com/dr.yosrygabr",
+    icon: "facebook",
+    ...withColor("facebook"),
+  },
+  {
+    title: "صفحة أوراد الطريقة اليسرية الصديقية",
+    url: "https://www.facebook.com/Awrad.Dryosry",
+    icon: "facebook",
+    ...withColor("facebook"),
+  },
+  {
+    title: "المجموعة الرسمية لنشر دروس وأخبار فضيلة أ.د. يسري جبر",
+    url: "https://www.facebook.com/groups/245819711389",
+    icon: "facebook",
+    ...withColor("facebook"),
+  },
+  {
+    title: "Dr. Yosry Gabr in English",
+    url: "https://www.facebook.com/people/Dr-Yosry-Gabr-in-English/61574856976137",
+    icon: "facebook",
+    ...withColor("facebook"),
+  },
+  {
+    title: "صفحة الانستجرام",
+    url: "http://www.instagram.com/DrYosryGabr",
+    icon: "instagram",
+    ...withColor("instagram"),
+  },
+  {
+    title: "Dr. Yosry Gabr in English",
+    url: "https://www.instagram.com/dryosrygabr_en/",
+    icon: "instagram",
+    ...withColor("instagram"),
+  },
+  {
     title: "قناة اليوتيوب الرسمية",
-    handle: "Dr. Yosry Gabr",
-    url: "#",
-    color: "hover:border-red-500 hover:shadow-red-500/20",
-    iconColor: "group-hover:text-red-500",
-    bgHover: "group-hover:bg-red-500/10",
-    description: "الدروس الكاملة والبث المباشر",
-    icon: "youtube"
+    url: "https://www.youtube.com/@dryosrygabr",
+    icon: "youtube",
+    ...withColor("youtube"),
   },
   {
-    id: "soundcloud",
-    platform: "SoundCloud",
-    title: "ساوند كلاود",
-    handle: "Audio Lectures",
-    url: "#",
-    color: "hover:border-orange-500 hover:shadow-orange-500/20",
-    iconColor: "group-hover:text-orange-500",
-    bgHover: "group-hover:bg-orange-500/10",
-    description: "مكتبة صوتية للخطب والدروس",
-    icon: "soundcloud"
+    title: "حساب الساوند كلاود",
+    url: "https://soundcloud.com/dryosrygabr",
+    icon: "soundcloud",
+    ...withColor("soundcloud"),
   },
   {
-    id: "tiktok",
-    platform: "TikTok",
-    title: "تيك توك",
-    handle: "@dryosrygabr",
-    url: "#",
-    color: "hover:border-cyan-400 hover:shadow-cyan-400/20",
-    iconColor: "group-hover:text-cyan-400",
-    bgHover: "group-hover:bg-cyan-400/10",
-    description: "مقتطفات سريعة ومواعظ",
-    icon: "tiktok"
+    title: "صفحة التيك توك",
+    url: "http://www.tiktok.com/@dryosrygabr",
+    icon: "tiktok",
+    ...withColor("tiktok"),
   },
-
-  // --- Messaging & Updates ---
   {
-    id: "telegram",
-    platform: "Telegram",
     title: "قناة التيليجرام",
-    handle: "Official Channel",
-    url: "#",
-    color: "hover:border-sky-500 hover:shadow-sky-500/20",
-    iconColor: "group-hover:text-sky-500",
-    bgHover: "group-hover:bg-sky-500/10",
-    description: "آخر التحديثات والإعلانات",
-    icon: "telegram"
+    url: "https://t.me/DrYosryGabr",
+    icon: "telegram",
+    ...withColor("telegram"),
   },
   {
-    id: "twitter",
-    platform: "Twitter (X)",
-    title: "تويتر (X)",
-    handle: "@dryosrygabr",
-    url: "#",
-    color: "hover:border-gray-400 hover:shadow-gray-400/20",
-    iconColor: "group-hover:text-gray-100",
-    bgHover: "group-hover:bg-white/10",
-    description: "التغريدات والخواطر",
-    icon: "twitter"
+    title: "حساب التويتر 𝕏",
+    url: "http://www.twitter.com/DrYosryGabr",
+    icon: "twitter",
+    ...withColor("twitter"),
   },
 ];
 ---
@@ -201,15 +167,6 @@ const socialMedia = [
                   <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 )}
                 
-                {/* Users/Group Icon */}
-                {link.icon === "users" && (
-                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                )}
-
-                {/* Book/Awrad Icon */}
-                {link.icon === "book" && (
-                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                )}
 
                 {/* Instagram Icon */}
                 {link.icon === "instagram" && (
@@ -222,9 +179,11 @@ const socialMedia = [
                 )}
 
                 {/* SoundCloud Icon */}
-                {link.icon === "soundcloud" && (
-                  <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M11.56 8.87V17h.05v-8.13h-.05zM10.93 9.15v7.85h.05v-7.85h-.05zM10.3 9.7v7.3h.05V9.7h-.05zM9.67 10.53v6.47h.05v-6.47h-.05zM9.04 11.23v5.77h.05v-5.77h-.05zM8.42 11.83v5.17h.05v-5.17h-.05zM7.78 12.57v4.43h.06v-4.43h-.06zM7.15 13.06v3.94h.05v-3.94h-.05zM6.52 13.5v3.5h.05v-3.5h-.05zM5.9 14.15v2.85h.05v-2.85h-.05zM5.26 14.65v2.35h.05v-2.35h-.05zM4.63 15.17v1.83h.05v-1.83h-.05zM4 15.6v1.4h.05v-1.4H4zm-1.8 1.12v.28h1.16v-.28H2.2zm19.6-4.5a3.3 3.3 0 0 0-3.23 2.66 4.7 4.7 0 0 0-2.84-1 4.74 4.74 0 0 0-4.17 2.45V8.2c0-.1-.02-.19-.05-.28a.5.5 0 0 0-.27-.27c-.1-.03-.19-.05-.28-.05h-.62c-.36 0-.63.29-.63.63v8.74c0 .34.27.62.62.62h13.06c1.82 0 3.3-1.48 3.3-3.3 0-1.81-1.48-3.3-3.3-3.3z"/></svg>
-                )}
+{link.icon === "soundcloud" && (
+  <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M17.5 10.5c-.3 0-.6.1-.8.2-.4-2.3-2.4-4-4.8-4-.7 0-1.3.1-1.9.4v8.7h7.5c1.4 0 2.5-1.1 2.5-2.6s-1.1-2.7-2.5-2.7zm-9.5-2.2c-.3 0-.5.2-.5.5v6.4c0 .3.2.5.5.5s.5-.2.5-.5V8.8c0-.3-.2-.5-.5-.5zm-2 1.6c-.3 0-.5.2-.5.5v4.8c0 .3.2.5.5.5s.5-.2.5-.5v-4.8c0-.3-.2-.5-.5-.5zm-2 1.2c-.3 0-.5.2-.5.5v3.6c0 .3.2.5.5.5s.5-.2.5-.5v-3.6c0-.3-.2-.5-.5-.5z"/>
+  </svg>
+)}
 
                 {/* Telegram Icon */}
                 {link.icon === "telegram" && (
@@ -246,9 +205,9 @@ const socialMedia = [
 
             <!-- Text Content -->
             <div class="flex-1">
-              <p class="text-xs text-amber-500 font-bold mb-1 uppercase tracking-wider">{link.platform}</p>
+              <!-- <p class="text-xs text-amber-500 font-bold mb-1 uppercase tracking-wider">{link.platform}</p> -->
               <h3 class="text-xl font-bold font-amiri text-white mb-1 group-hover:text-amber-200 transition-colors">{link.title}</h3>
-              <p class="text-emerald-100/60 text-sm">{link.description}</p>
+              <!-- <p class="text-emerald-100/60 text-sm">{link.description}</p> -->
             </div>
 
             <!-- Arrow Icon -->

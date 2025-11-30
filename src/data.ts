@@ -5,6 +5,7 @@ export const navLinks = [
   { label: "الصوتيات", href: "#audio" },
   { label: "البث المباشر", href: "/live" },
   { label: "الكتب و المؤلفات", href: "/books" },
+  { href: "/news", label: "الأخبار" },
   { href: "/social", label: "المنصات الرسمية" }, // <--- Add this line
   // { label: "تواصل", href: "#contact" },
 ];

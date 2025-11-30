@@ -1,22 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
-import News from "../components/News";
-import Lessons from "../components/Lessons";
-import YouTube from "../components/YouTube";
-import Audio from "../components/Audio";
-import LiveStream from "../components/LiveStream";
-import Books from "../components/Books";
+import LatestVideos from '../components/LatestVideos';
 ---
 
 <Layout>
 	<main>
 		<Hero />
-		<News />
-		<Lessons />
-		<YouTube />
-		<Audio client:load />
-		<LiveStream />
-		<Books />
+    <LatestVideos client:visible />
 	</main>
 </Layout>

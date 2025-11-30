@@ -1,0 +1,237 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+// --- Mock Data (Replace with CMS or API later) ---
+// Using placeholder images with theme colors (Emerald/Amber)
+const getNewsImage = (text: string) => `https://placehold.co/800x600/064e3b/d97706?text=${encodeURIComponent(text)}&font=playfair`;
+
+const featuredNews = {
+  id: 1,
+  title: "إطلاق سلسلة مجالس الذكر والمديح النبوي بمسجد الصديق",
+  date: "30 نوفمبر 2025",
+  category: "فعاليات",
+  excerpt: "يسر الطريقة الصديقية أن تعلن عن بدء سلسلة جديدة من مجالس الذكر الأسبوعية، تتخللها فقرات من المديح النبوي الشريف وقراءة في كتاب الشمائل المحمدية، وذلك بحضور فضيلة الدكتور يسري جبر.",
+  image: getNewsImage("مجلس الذكر"),
+  slug: "#"
+};
+
+const newsItems = [
+  {
+    id: 2,
+    title: "بيان هام بشأن استقبال شهر رمضان المبارك",
+    date: "28 نوفمبر 2025",
+    category: "بيانات",
+    excerpt: "كلمة توجيهية من فضيلة الدكتور حول الاستعداد القلبي والروحي لاستقبال الشهر الفضيل، وأهمية تصفية النفوس.",
+    image: getNewsImage("استقبال رمضان"),
+    slug: "#"
+  },
+  {
+    id: 3,
+    title: "صدور الطبعة الجديدة من كتاب 'في رحاب التفسير'",
+    date: "25 نوفمبر 2025",
+    category: "إصدارات",
+    excerpt: "تم بحمد الله إصدار الطبعة المنقحة والمزيدة من موسوعة التفسير، وهي متوفرة الآن في جميع معارض الكتاب والمكتبات الإسلامية.",
+    image: getNewsImage("إصدار جديد"),
+    slug: "#"
+  },
+  {
+    id: 4,
+    title: "جولة دعوية في محافظات الصعيد",
+    date: "20 نوفمبر 2025",
+    category: "زيارات",
+    excerpt: "جانب من زيارة فضيلة الدكتور لمحافظتي أسيوط وسوهاج، ولقاءاته مع علماء الأزهر الشريف وأهالي الصعيد الكرام.",
+    image: getNewsImage("جولة دعوية"),
+    slug: "#"
+  },
+  {
+    id: 5,
+    title: "تعليق فضيلته على الأحداث الجارية",
+    date: "15 نوفمبر 2025",
+    category: "مرئيات",
+    excerpt: "مقطع فيديو جديد يتناول فيه الدكتور يسري جبر الرؤية الشرعية للأحداث الراهنة وكيفية التعامل مع الفتن.",
+    image: getNewsImage("تعليق الأحداث"),
+    slug: "#"
+  },
+  {
+    id: 6,
+    title: "موعد المجلس الأسبوعي الجديد",
+    date: "10 نوفمبر 2025",
+    category: "تنويهات",
+    excerpt: "تنويه هام لطلاب العلم ورواد المسجد حول تغيير موعد درس التفسير ليبدأ بعد صلاة العشاء مباشرة.",
+    image: getNewsImage("تنويه هام"),
+    slug: "#"
+  }
+];
+
+const categories = ["الكل", "بيانات", "فعاليات", "إصدارات", "مرئيات"];
+---
+
+<Layout title="أخبار وأحداث | د. يسري جبر">
+  <Navbar />
+
+  <!-- Hero Section -->
+  <section class="relative pt-32 pb-16 overflow-hidden bg-gradient-to-b from-emerald-950 to-emerald-900">
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+       <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="newsPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+             <path d="M50 0 L100 50 L50 100 L0 50 Z" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+             <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#newsPattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10 text-center">
+      <div class="inline-block relative mb-6">
+         <h1 class="text-4xl md:text-6xl font-bold font-amiri text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-200 py-2">
+            أخبار وأحداث
+         </h1>
+         <div class="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent rounded-full mt-2"></div>
+      </div>
+      <p class="text-xl text-emerald-100/80 font-amiri max-w-2xl mx-auto leading-relaxed">
+        تابعوا كل جديد عن أنشطة وفعاليات وبيانات فضيلة الدكتور
+      </p>
+    </div>
+  </section>
+
+  <!-- Content Section -->
+  <section class="py-16 bg-emerald-900 relative min-h-screen">
+    <!-- Background Lights -->
+    <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      
+      <!-- Category Filter (Visual Only) -->
+      <div class="flex flex-wrap justify-center gap-3 mb-16">
+        {categories.map((cat, index) => (
+          <button class={`px-6 py-2 rounded-full font-amiri text-lg transition-all duration-300 border ${index === 0 ? 'bg-amber-500 text-white border-amber-500 shadow-lg shadow-amber-900/20' : 'bg-transparent text-emerald-200 border-emerald-500/30 hover:border-amber-400 hover:text-amber-400'}`}>
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <!-- Featured Article -->
+      <div class="mb-16">
+        <div class="group relative bg-emerald-950/50 rounded-3xl overflow-hidden border border-emerald-500/20 hover:border-amber-500/30 transition-all duration-500 shadow-2xl">
+          <div class="grid md:grid-cols-2 gap-0">
+            <!-- Image -->
+            <div class="relative h-64 md:h-auto overflow-hidden">
+               <img 
+                 src={featuredNews.image} 
+                 alt={featuredNews.title} 
+                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+               />
+               <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-emerald-950/90 via-transparent to-transparent"></div>
+               <div class="absolute top-4 right-4 bg-amber-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                 {featuredNews.category}
+               </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="p-8 md:p-12 flex flex-col justify-center">
+               <div class="flex items-center gap-2 text-emerald-300 text-sm mb-4">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                 <span>{featuredNews.date}</span>
+               </div>
+               
+               <h2 class="text-2xl md:text-4xl font-bold font-amiri text-white mb-6 leading-normal group-hover:text-amber-300 transition-colors">
+                 {featuredNews.title}
+               </h2>
+               
+               <p class="text-emerald-100/70 text-lg leading-relaxed mb-8 font-amiri">
+                 {featuredNews.excerpt}
+               </p>
+               
+               <div>
+                 <a href={featuredNews.slug} class="inline-flex items-center gap-2 text-amber-400 font-bold hover:text-amber-300 transition-colors group/link">
+                   <span>اقرأ التفاصيل</span>
+                   <svg class="w-5 h-5 transform group-hover/link:-translate-x-2 transition-transform rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                   </svg>
+                 </a>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Standard Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {newsItems.map((item) => (
+          <article class="group bg-white/5 backdrop-blur-sm rounded-2xl border border-emerald-500/20 overflow-hidden hover:border-amber-400/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-black/20 flex flex-col">
+            
+            <!-- Image Container -->
+            <div class="relative h-56 overflow-hidden">
+               <img 
+                 src={item.image} 
+                 alt={item.title} 
+                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+               />
+               <div class="absolute top-4 right-4 bg-emerald-950/80 backdrop-blur-md border border-emerald-500/30 text-emerald-100 px-3 py-1 rounded-full text-xs font-bold">
+                 {item.category}
+               </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 flex-1 flex flex-col">
+               <div class="flex items-center gap-2 text-emerald-400 text-xs mb-3">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                 <span>{item.date}</span>
+               </div>
+
+               <h3 class="text-xl font-bold font-amiri text-white mb-3 leading-relaxed group-hover:text-amber-200 transition-colors">
+                 {item.title}
+               </h3>
+               
+               <p class="text-emerald-100/60 text-sm leading-loose mb-6 line-clamp-3 font-amiri">
+                 {item.excerpt}
+               </p>
+
+               <div class="mt-auto pt-4 border-t border-emerald-500/20">
+                 <a href={item.slug} class="flex items-center justify-between text-sm text-amber-400/90 font-bold group-hover:text-amber-300">
+                   <span>اقرأ المزيد</span>
+                   <svg class="w-4 h-4 rtl:rotate-180 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                   </svg>
+                 </a>
+               </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Newsletter Section -->
+      <div class="mt-24">
+        <div class="relative bg-emerald-950 rounded-3xl p-8 md:p-12 overflow-hidden text-center border border-emerald-500/30">
+          <div class="absolute inset-0 opacity-20 bg-[url('/patterns/islamic-grid.svg')]"></div>
+          <div class="relative z-10 max-w-2xl mx-auto">
+             <h3 class="text-2xl md:text-3xl font-bold font-amiri text-white mb-4">
+               اشترك في النشرة الإخبارية
+             </h3>
+             <p class="text-emerald-200 mb-8 font-amiri text-lg">
+               كن أول من يعلم بمواعيد الدروس، الفعاليات، والإصدارات الجديدة لفضيلة الدكتور.
+             </p>
+             <form class="flex flex-col sm:flex-row gap-3">
+               <input 
+                 type="email" 
+                 placeholder="البريد الإلكتروني" 
+                 class="flex-1 px-6 py-3 rounded-full bg-white/10 border border-emerald-500/30 text-white placeholder-emerald-400 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
+               />
+               <button class="px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-bold shadow-lg transition-all transform hover:scale-105">
+                 اشترك الآن
+               </button>
+             </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
