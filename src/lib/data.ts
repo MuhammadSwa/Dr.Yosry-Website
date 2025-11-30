@@ -6,7 +6,8 @@ export const navLinks = [
   { label: "البث المباشر", href: "/live" },
   { label: "الكتب و المؤلفات", href: "/books" },
   { href: "/news", label: "الأخبار" },
-  { href: "/social", label: "المنصات الرسمية" }, // <--- Add this line
+  { href: "/social", label: "المنصات الرسمية" },
+  { label: "الأسئلة الشائعة", href: "/faq" },
   // { label: "تواصل", href: "#contact" },
 ];
 
@@ -104,33 +105,7 @@ export const newsData = [
   },
 ];
 
-// Testimonials Data
-export const testimonialsData = [
-  {
-    id: 1,
-    name: "أحمد محمد علي",
-    role: "طالب علم",
-    content: "دروس فضيلة الدكتور يسري جبر تجمع بين العمق العلمي والوضوح في الطرح. استفدت كثيراً من شروحاته في التفسير والحديث.",
-    avatar: "https://placehold.co/100x100/047857/white?text=A",
-    rating: 5
-  },
-  {
-    id: 2,
-    name: "فاطمة حسن",
-    role: "طالبة دراسات إسلامية",
-    content: "منهج الدكتور في التدريس يتميز بالوسطية والاعتدال. أنصح الجميع بمتابعة دروسه القيمة.",
-    avatar: "https://placehold.co/100x100/047857/white?text=F",
-    rating: 5
-  },
-  {
-    id: 3,
-    name: "عمر عبد الله",
-    role: "داعية",
-    content: "مؤلفات الدكتور يسري جبر مراجع أساسية في مكتبتي. جزاه الله خيراً على جهوده في نشر العلم النافع.",
-    avatar: "https://placehold.co/100x100/047857/white?text=O",
-    rating: 5
-  },
-];
+
 
 // Contact Information
 export const contactInfo = {

@@ -1,35 +1,62 @@
 ---
-import { navLinks} from "../lib/data";
+import { navLinks } from "../lib/data";
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => {
+  const normalizedHref = href.replace(/\/$/, "") || "/";
+  return (
+    currentPath === normalizedHref ||
+    (normalizedHref !== "/" &&
+      currentPath.startsWith(normalizedHref) &&
+      !href.startsWith("#"))
+  );
+};
 ---
 
-<nav class="fixed top-0 w-full z-50 bg-emerald-950/90 backdrop-blur-md border-b border-white/10 shadow-lg transition-all duration-300">
+<nav
+  class="fixed top-0 w-full z-50 bg-emerald-950/90 backdrop-blur-md border-b border-white/10 shadow-lg transition-all duration-300"
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between md:justify-start md:gap-x-10 h-20 items-center">
-      
+    <div
+      class="flex justify-between md:justify-start md:gap-x-10 h-20 items-center"
+    >
       {/* Logo */}
       <div class="flex-shrink-0 flex items-center">
-        <a href="/" class="text-2xl font-bold text-amber-400 font-amiri hover:text-amber-300 transition-colors drop-shadow-md">
+        <a
+          href="/"
+          class="text-2xl font-bold text-amber-400 font-amiri hover:text-amber-300 transition-colors drop-shadow-md"
+        >
           د. يسري جبر
         </a>
       </div>
 
       {/* Desktop Menu */}
       <div class="hidden md:flex items-center flex-1">
-
         {/* 1. Navigation Links */}
         <div class="flex items-center space-x-8 space-x-reverse">
-          {navLinks.map((link) => (
-            <a
-              href={link.href}
-              class="text-emerald-100/90 hover:text-amber-400 hover:bg-white/5 px-3 py-2 rounded-md text-base font-medium transition-all duration-200 font-amiri"
-            >
-              {link.label}
-            </a>
-          ))}
+          {
+            navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <a
+                  href={link.href}
+                  class:list={[
+                    "px-3 py-2 rounded-md text-base font-medium transition-all duration-200 font-amiri",
+                    active
+                      ? "text-amber-400 bg-white/10 shadow-sm"
+                      : "text-emerald-100/90 hover:text-amber-400 hover:bg-white/5",
+                  ]}
+                  aria-current={active ? "page" : undefined}
+                >
+                  {link.label}
+                </a>
+              );
+            })
+          }
         </div>
 
         {/* 2. Actions Group */}
-        <div class="flex items-center gap-4 mr-auto ">
+        <div class="flex items-center gap-4 mr-auto">
           {/* Contact Button */}
           <a
             href="/contact"
@@ -50,11 +77,33 @@ import { navLinks} from "../lib/data";
           aria-expanded="false"
         >
           <span class="sr-only">Open main menu</span>
-          <svg id="icon-hamburger" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <svg
+            id="icon-hamburger"
+            class="block h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
-          <svg id="icon-close" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            id="icon-close"
+            class="hidden h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
       </div>
@@ -62,16 +111,31 @@ import { navLinks} from "../lib/data";
   </div>
 
   {/* Mobile Menu (Themed) */}
-  <div class="hidden md:hidden bg-emerald-950 border-b border-white/10 shadow-2xl" id="mobile-menu">
+  <div
+    class="hidden md:hidden bg-emerald-950 border-b border-white/10 shadow-2xl"
+    id="mobile-menu"
+  >
     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-      {navLinks.map((link) => (
-        <a
-          href={link.href}
-          class="mobile-link text-emerald-100 hover:text-amber-400 hover:bg-white/5 block px-3 py-3 rounded-md text-base font-bold text-right font-amiri border-b border-white/5 last:border-0"
-        >
-          {link.label}
-        </a>
-      ))}
+      {
+        navLinks.map((link) => {
+          const active = isActive(link.href);
+          return (
+            <a
+              href={link.href}
+              class:list={[
+                "mobile-link block px-3 py-3 rounded-md text-base font-bold text-right font-amiri border-b border-white/5 last:border-0",
+                active
+                  ? "text-amber-400 bg-white/10"
+                  : "text-emerald-100 hover:text-amber-400 hover:bg-white/5",
+              ]}
+              aria-current={active ? "page" : undefined}
+            >
+              {link.label}
+            </a>
+          );
+        })
+      }
+
       <div class="pt-4 pb-2 px-3">
         <a
           href="#contact"
@@ -85,31 +149,49 @@ import { navLinks} from "../lib/data";
 </nav>
 
 <script>
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-  const iconHamburger = document.getElementById('icon-hamburger');
-  const iconClose = document.getElementById('icon-close');
-  const mobileLinks = document.querySelectorAll('.mobile-link');
+  const btn = document.getElementById("mobile-menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  const iconHamburger = document.getElementById("icon-hamburger");
+  const iconClose = document.getElementById("icon-close");
+  const mobileLinks = document.querySelectorAll(".mobile-link");
 
   function toggleMenu() {
-    const isHidden = menu?.classList.contains('hidden');
-    menu?.classList.toggle('hidden');
-    btn?.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    const isHidden = menu?.classList.contains("hidden");
+    menu?.classList.toggle("hidden");
+    btn?.setAttribute("aria-expanded", isHidden ? "true" : "false");
     if (isHidden) {
-      iconHamburger?.classList.add('hidden');
-      iconHamburger?.classList.remove('block');
-      iconClose?.classList.remove('hidden');
-      iconClose?.classList.add('block');
+      iconHamburger?.classList.add("hidden");
+      iconHamburger?.classList.remove("block");
+      iconClose?.classList.remove("hidden");
+      iconClose?.classList.add("block");
     } else {
-      iconHamburger?.classList.remove('hidden');
-      iconHamburger?.classList.add('block');
-      iconClose?.classList.add('hidden');
-      iconClose?.classList.remove('block');
+      iconHamburger?.classList.remove("hidden");
+      iconHamburger?.classList.add("block");
+      iconClose?.classList.add("hidden");
+      iconClose?.classList.remove("block");
     }
   }
 
-  btn?.addEventListener('click', toggleMenu);
-  mobileLinks.forEach(link => link.addEventListener('click', () => {
-    if (!menu?.classList.contains('hidden')) toggleMenu();
-  }));
+  btn?.addEventListener("click", toggleMenu);
+  mobileLinks.forEach((link) =>
+    link.addEventListener("click", () => {
+      if (!menu?.classList.contains("hidden")) toggleMenu();
+    }),
+  );
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (event) => {
+    if (event.target instanceof Node) {
+      const isClickInsideMenu = menu?.contains(event.target);
+      const isClickOnButton = btn?.contains(event.target);
+
+      if (
+        !isClickInsideMenu &&
+        !isClickOnButton &&
+        !menu?.classList.contains("hidden")
+      ) {
+        toggleMenu();
+      }
+    }
+  });
 </script>
