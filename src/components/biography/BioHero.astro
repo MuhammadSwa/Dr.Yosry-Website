@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  image: ImageMetadata;
+}
+
+const { image } = Astro.props;
+---
+
+<section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-l from-emerald-900 via-emerald-800 to-emerald-950">
+  <!-- Animated Background -->
+  <div class="absolute inset-0 opacity-10">
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="islamicPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+          <path d="M50 0 L100 50 L50 100 L0 50 Z M25 25 L75 25 L75 75 L25 75 Z" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+          <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#islamicPattern)"/>
+    </svg>
+  </div>
+
+  <!-- Floating Ornaments & Lights -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-10 right-10 w-32 h-32 border-4 border-amber-400/20 rounded-full animate-[spin_20s_linear_infinite]"></div>
+    <div class="absolute bottom-20 left-20 w-24 h-24 border-4 border-emerald-400/20 rounded-full animate-pulse"></div>
+    <div class="absolute top-1/4 left-0 w-[600px] h-[600px] bg-emerald-500/20 rounded-full blur-3xl -translate-x-1/2"></div>
+    <div class="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-amber-500/20 rounded-full blur-3xl translate-x-1/2"></div>
+  </div>
+
+  <div class="container mx-auto px-6 relative z-10 py-16">
+    <div class="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center max-w-7xl mx-auto">
+      
+      <!-- Text Content -->
+      <div class="text-center lg:text-right order-2 lg:order-1 space-y-8">
+        <!-- Top Divider -->
+        <div class="flex items-center justify-center lg:justify-end opacity-80">
+          <div class="h-px w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+          <svg class="w-8 h-8 mx-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          <div class="h-px w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+        </div>
+
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white font-amiri leading-relaxed drop-shadow-2xl">
+          السيرة الذاتية
+        </h1>
+        
+        <div class="space-y-4">
+          <h2 class="text-2xl md:text-3xl lg:text-4xl text-amber-300 font-amiri">
+            فضيلة الدكتور
+          </h2>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl text-amber-200 font-bold font-amiri">
+            يسري رشدي السيد جبر
+          </h3>
+        </div>
+        
+        <div class="flex items-center justify-center lg:justify-end gap-3 text-emerald-200 text-base md:text-lg flex-wrap pt-4">
+          {['القاهري مولداً', 'الحسني نسباً', 'الشافعي مذهباً', 'الصديقي طريقةً', 'الأزهري إجازةً'].map(badge => (
+            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 hover:bg-white/20 transition-colors">
+              {badge}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Portrait Image -->
+      <div class="order-1 lg:order-2">
+        <div class="relative group max-w-lg mx-auto">
+          <div class="relative bg-gradient-to-br from-amber-900/40 via-emerald-900/40 to-amber-900/40 backdrop-blur-sm p-8 rounded-3xl border-4 border-amber-500/30 shadow-2xl">
+             <!-- Corner Decorations -->
+            <div class="absolute top-0 right-0 w-20 h-20 border-t-4 border-r-4 border-amber-400 rounded-tr-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-20 h-20 border-b-4 border-l-4 border-amber-400 rounded-bl-3xl"></div>
+
+            <div class="relative overflow-hidden rounded-2xl shadow-2xl">
+              <Image src={image} alt="فضيلة الدكتور يسري جبر" class="w-full h-auto object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="mt-16 animate-bounce text-center">
+      <svg class="w-6 h-6 mx-auto text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,541 @@
+
+  <!-- Portrait Section -->
+  <section class="py-20 relative overflow-hidden bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900">
+    <!-- Rich Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="portraitPattern" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+            <circle cx="60" cy="60" r="35" fill="none" stroke="currentColor" stroke-width="0.5" class="text-emerald-300"/>
+            <circle cx="60" cy="60" r="20" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+            <path d="M60 10 L60 110 M10 60 L110 60" stroke="currentColor" stroke-width="0.3" class="text-emerald-400"/>
+            <path d="M20 20 L100 100 M100 20 L20 100" stroke="currentColor" stroke-width="0.3" class="text-amber-400"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#portraitPattern)"/>
+      </svg>
+    </div>
+
+    <!-- Decorative Lights -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-1/4 left-0 w-[600px] h-[600px] bg-emerald-500/20 rounded-full blur-3xl -translate-x-1/2"></div>
+      <div class="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-amber-500/20 rounded-full blur-3xl translate-x-1/2"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-5xl mx-auto">
+        <!-- Portrait Frame -->
+        <div class="relative group">
+          <!-- Outer Glow -->
+          <div class="absolute -inset-8 bg-gradient-to-r from-emerald-500 via-amber-500 to-emerald-500 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
+          
+          <!-- Islamic Frame Background -->
+          <div class="relative bg-gradient-to-br from-amber-900/40 via-emerald-900/40 to-amber-900/40 backdrop-blur-sm p-8 md:p-12 rounded-3xl border-4 border-amber-500/30 shadow-2xl">
+            <!-- Corner Ornaments -->
+            <div class="absolute top-0 right-0 w-24 h-24 border-t-4 border-r-4 border-amber-400 rounded-tr-3xl"></div>
+            <div class="absolute top-0 left-0 w-24 h-24 border-t-4 border-l-4 border-emerald-400 rounded-tl-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-24 h-24 border-b-4 border-r-4 border-emerald-400 rounded-br-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 border-b-4 border-l-4 border-amber-400 rounded-bl-3xl"></div>
+
+            <!-- Inner Decorative Border -->
+            <div class="relative">
+              <!-- Image Container -->
+              <div class="relative overflow-hidden rounded-2xl shadow-2xl group-hover:shadow-amber-500/50 transition-all duration-500">
+                <img 
+                  src={drYosryImage.src} 
+                  alt="فضيلة الدكتور يسري جبر"
+                  class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700"
+                />
+                <!-- Image Overlay Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+                
+                <!-- Decorative Overlay Pattern -->
+                <div class="absolute inset-0 opacity-20 pointer-events-none">
+                  <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <pattern id="imageOverlay" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+                        <circle cx="30" cy="30" r="20" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#imageOverlay)"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Decorative Stars Around Frame -->
+              <div class="absolute -top-4 right-1/4 text-amber-400 animate-pulse">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+              </div>
+              <div class="absolute -bottom-4 left-1/4 text-emerald-400 animate-pulse delay-500">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+---
+import Layout from "../layouts/Layout.astro";
+import { DrYosryBio } from "../data";
+import drYosryImage from "../assets/dr-yosry-bio-cover.jpg";
+
+// Parse the biography content into sections
+const bioSections = DrYosryBio.split('##').filter(section => section.trim());
+const intro = bioSections[0].trim();
+const sections = bioSections.slice(1).map(section => {
+  const lines = section.trim().split('\n');
+  const title = lines[0].trim();
+  const content = lines.slice(1).join('\n').trim();
+  return { title, content };
+});
+---
+
+<Layout>
+  <!-- Combined Hero and Portrait Section -->
+  <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950">
+    <!-- Animated Islamic Geometric Pattern Background -->
+    <div class="absolute inset-0 opacity-10">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="islamicPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M50 0 L100 50 L50 100 L0 50 Z M25 25 L75 25 L75 75 L25 75 Z" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="0.5" 
+                  class="text-amber-300"/>
+            <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+            <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#islamicPattern)"/>
+      </svg>
+    </div>
+
+    <!-- Floating Ornaments -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-10 right-10 w-32 h-32 border-4 border-amber-400/20 rounded-full animate-spin-slow"></div>
+      <div class="absolute bottom-20 left-20 w-24 h-24 border-4 border-emerald-400/20 rounded-full animate-pulse"></div>
+      <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-br from-amber-400/10 to-transparent rounded-lg rotate-45 animate-float"></div>
+    </div>
+
+    <!-- Decorative Lights -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-1/4 left-0 w-[600px] h-[600px] bg-emerald-500/20 rounded-full blur-3xl -translate-x-1/2"></div>
+      <div class="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-amber-500/20 rounded-full blur-3xl translate-x-1/2"></div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="container mx-auto px-6 relative z-10 py-16">
+
+      <div class="grid lg:grid-cols-2 gap-16 xl:gap-20 items-center max-w-7xl mx-auto">
+        <!-- Left: Title and Info -->
+        <div class="text-center lg:text-right order-2 lg:order-1 space-y-8">
+          <!-- Decorative Top Border -->
+          <div class="flex items-center justify-center lg:justify-end animate-fadeIn">
+            <div class="h-px w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+            <div class="mx-4">
+              <svg class="w-8 h-8 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+              </svg>
+            </div>
+            <div class="h-px w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+          </div>
+
+          <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white font-amiri leading-relaxed animate-slideUp drop-shadow-2xl">
+            السيرة الذاتية
+          </h1>
+          
+          <div class="space-y-4">
+            <h2 class="text-2xl md:text-3xl lg:text-4xl text-amber-300 font-amiri animate-slideUp delay-100">
+              فضيلة الدكتور
+            </h2>
+            <h3 class="text-3xl md:text-4xl lg:text-5xl text-amber-200 font-bold font-amiri animate-slideUp delay-100">
+              يسري رشدي السيد جبر
+            </h3>
+          </div>
+          
+          <div class="flex items-center justify-center lg:justify-end gap-3 text-emerald-200 text-base md:text-lg animate-fadeIn delay-200 flex-wrap pt-4">
+            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">القاهري مولداً</span>
+            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">الحسني نسباً</span>
+            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">الشافعي مذهباً</span>
+            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">الصديقي طريقةً</span>
+            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">الأزهري إجازةً</span>
+          </div>
+
+          <!-- Decorative Bottom Border -->
+          <div class="flex items-center justify-center lg:justify-end animate-fadeIn delay-300 pt-4">
+            <div class="h-px w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+            <div class="mx-4">
+              <svg class="w-8 h-8 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+              </svg>
+            </div>
+            <div class="h-px w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+          </div>
+        </div>
+
+        <!-- Right: Portrait -->
+        <div class="order-1 lg:order-2">
+          <div class="relative group max-w-lg mx-auto">
+            <!-- Islamic Frame Background -->
+            <div class="relative bg-gradient-to-br from-amber-900/40 via-emerald-900/40 to-amber-900/40 backdrop-blur-sm p-8 rounded-3xl border-4 border-amber-500/30 shadow-2xl">
+              <!-- Corner Ornaments -->
+              <div class="absolute top-0 right-0 w-20 h-20 border-t-4 border-r-4 border-amber-400 rounded-tr-3xl"></div>
+              <div class="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-emerald-400 rounded-tl-3xl"></div>
+              <div class="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-emerald-400 rounded-br-3xl"></div>
+              <div class="absolute bottom-0 left-0 w-20 h-20 border-b-4 border-l-4 border-amber-400 rounded-bl-3xl"></div>
+
+              <!-- Image Container -->
+              <div class="relative overflow-hidden rounded-2xl shadow-2xl">
+                <img 
+                  src={drYosryImage.src} 
+                  alt="فضيلة الدكتور يسري جبر"
+                  class="w-full h-auto object-cover"
+                />
+                <!-- Image Overlay Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
+              </div>
+
+              <!-- Decorative Stars Around Frame -->
+              <div class="absolute -top-4 right-1/4 text-amber-400 animate-pulse">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+              </div>
+              <div class="absolute -bottom-4 left-1/4 text-emerald-400 animate-pulse delay-500">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="mt-16 animate-bounce text-center">
+        <svg class="w-6 h-6 mx-auto text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Introduction Section -->
+  <section class="py-20 relative overflow-hidden bg-gradient-to-br from-amber-50 via-white to-emerald-50">
+    <!-- Rich Decorative Background -->
+    <div class="absolute inset-0 opacity-[0.07]">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="introPattern" x="0" y="0" width="140" height="140" patternUnits="userSpaceOnUse">
+            <!-- Central Star -->
+            <path d="M70 20 L80 50 L110 50 L85 68 L95 98 L70 80 L45 98 L55 68 L30 50 L60 50 Z" 
+                  fill="none" stroke="currentColor" stroke-width="0.5" class="text-emerald-600"/>
+            <!-- Surrounding Circles -->
+            <circle cx="70" cy="70" r="55" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-600"/>
+            <circle cx="70" cy="70" r="40" fill="none" stroke="currentColor" stroke-width="0.5" class="text-emerald-600"/>
+            <circle cx="70" cy="70" r="25" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-600"/>
+            <!-- Cross Lines -->
+            <path d="M70 15 L70 125 M15 70 L125 70" stroke="currentColor" stroke-width="0.3" class="text-emerald-500"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#introPattern)"/>
+      </svg>
+    </div>
+
+    <!-- Decorative Gradient Orbs -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-emerald-300/20 to-transparent rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-radial from-amber-300/20 to-transparent rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-4xl mx-auto">
+        <!-- Ornamental Divider -->
+        <div class="flex items-center justify-center mb-12">
+          <div class="w-full max-w-md">
+            <svg viewBox="0 0 400 40" class="w-full h-auto">
+              <path d="M0 20 Q100 0, 200 20 T400 20" stroke="url(#goldGradient)" stroke-width="2" fill="none"/>
+              <circle cx="200" cy="20" r="8" fill="url(#goldGradient)"/>
+              <circle cx="100" cy="20" r="4" fill="url(#goldGradient)"/>
+              <circle cx="300" cy="20" r="4" fill="url(#goldGradient)"/>
+              <defs>
+                <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#d97706;stop-opacity:0.3"/>
+                  <stop offset="50%" style="stop-color:#d97706;stop-opacity:1"/>
+                  <stop offset="100%" style="stop-color:#d97706;stop-opacity:0.3"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+
+        <div class="text-center mb-12">
+          <div class="inline-block relative">
+            <p class="relative text-2xl md:text-3xl font-amiri text-emerald-900 leading-relaxed p-10 bg-gradient-to-br from-white via-amber-50/80 to-emerald-50/80 backdrop-blur-sm rounded-2xl border-2 border-amber-300/40 shadow-xl">
+              {intro}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Biography Content Sections -->
+  {sections.map((section, index) => {
+    const sectionBgClass = index % 3 === 0 
+      ? 'bg-gradient-to-br from-amber-100 via-emerald-100 to-amber-50' 
+      : index % 3 === 1 
+      ? 'bg-gradient-to-br from-emerald-50 via-amber-100 to-emerald-100' 
+      : 'bg-gradient-to-br from-amber-50 via-emerald-50 to-amber-100';
+    
+    const patternId = `bioPattern${index}`;
+    
+    return (
+      <section class={`py-20 relative overflow-hidden ${sectionBgClass}`}>
+        <!-- Rich Section Background Pattern -->
+        <div class="absolute inset-0 opacity-[0.15]">
+          <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              {index % 3 === 0 ? (
+                <pattern id={patternId} x="0" y="0" width="150" height="150" patternUnits="userSpaceOnUse">
+                  <!-- Mandala-inspired Pattern -->
+                  <circle cx="75" cy="75" r="60" fill="none" stroke="#059669" stroke-width="0.8"/>
+                  <circle cx="75" cy="75" r="45" fill="none" stroke="#d97706" stroke-width="0.8"/>
+                  <circle cx="75" cy="75" r="30" fill="none" stroke="#059669" stroke-width="0.8"/>
+                  <circle cx="75" cy="75" r="15" fill="none" stroke="#d97706" stroke-width="0.8"/>
+                  <path d="M75 15 L75 135 M15 75 L135 75 M35 35 L115 115 M115 35 L35 115" stroke="#10b981" stroke-width="0.5"/>
+                </pattern>
+              ) : index % 3 === 1 ? (
+                <pattern id={patternId} x="0" y="0" width="150" height="150" patternUnits="userSpaceOnUse">
+                  <!-- Star Pattern -->
+                  <path d="M75 20 L85 55 L120 55 L92 75 L102 110 L75 90 L48 110 L58 75 L30 55 L65 55 Z" 
+                        fill="none" stroke="#d97706" stroke-width="0.8"/>
+                  <circle cx="75" cy="75" r="50" fill="none" stroke="#059669" stroke-width="0.8"/>
+                  <path d="M75 25 L75 125 M25 75 L125 75" stroke="#f59e0b" stroke-width="0.5"/>
+                </pattern>
+              ) : (
+                <pattern id={patternId} x="0" y="0" width="150" height="150" patternUnits="userSpaceOnUse">
+                  <!-- Geometric Flower Pattern -->
+                  <circle cx="75" cy="75" r="55" fill="none" stroke="#059669" stroke-width="0.8"/>
+                  <circle cx="75" cy="30" r="15" fill="none" stroke="#d97706" stroke-width="0.8"/>
+                  <circle cx="75" cy="120" r="15" fill="none" stroke="#d97706" stroke-width="0.8"/>
+                  <circle cx="30" cy="75" r="15" fill="none" stroke="#d97706" stroke-width="0.8"/>
+                  <circle cx="120" cy="75" r="15" fill="none" stroke="#d97706" stroke-width="0.8"/>
+                  <path d="M75 15 L75 135 M15 75 L135 75" stroke="#10b981" stroke-width="0.5"/>
+                </pattern>
+              )}
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#${patternId})`}/>
+          </svg>
+        </div>
+
+        <!-- Decorative Light Effects -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+          {index % 2 === 0 ? (
+            <>
+              <div class="absolute top-0 right-1/4 w-[400px] h-[400px] bg-emerald-400/10 rounded-full blur-3xl"></div>
+              <div class="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-amber-400/10 rounded-full blur-3xl"></div>
+            </>
+          ) : (
+            <>
+              <div class="absolute top-1/3 left-0 w-[400px] h-[400px] bg-amber-400/10 rounded-full blur-3xl -translate-x-1/2"></div>
+              <div class="absolute bottom-1/3 right-0 w-[400px] h-[400px] bg-emerald-400/10 rounded-full blur-3xl translate-x-1/2"></div>
+            </>
+          )}
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+          <div class="max-w-5xl mx-auto">
+            <!-- Section Title -->
+            <div class="text-center mb-12">
+              <div class="inline-block relative group">
+                
+                <!-- Title Container -->
+                <div class="relative">
+                  <!-- Top Ornament -->
+                  <div class="flex justify-center mb-3">
+                    <svg class="w-16 h-8" viewBox="0 0 100 50">
+                      <path d="M10 40 Q50 10, 90 40" stroke="#d97706" stroke-width="2" fill="none"/>
+                      <circle cx="50" cy="25" r="4" fill="#d97706"/>
+                    </svg>
+                  </div>
+
+                  <h2 class="text-4xl md:text-5xl font-bold font-amiri text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900 px-8 py-4">
+                    {section.title}
+                  </h2>
+
+                  <!-- Bottom Ornament -->
+                  <div class="flex justify-center mt-3">
+                    <svg class="w-16 h-8" viewBox="0 0 100 50">
+                      <path d="M10 10 Q50 40, 90 10" stroke="#d97706" stroke-width="2" fill="none"/>
+                      <circle cx="50" cy="25" r="4" fill="#d97706"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Corner Decorations -->
+                <div class="absolute -top-4 -right-4 w-8 h-8 border-t-2 border-r-2 border-amber-400 opacity-60"></div>
+                <div class="absolute -bottom-4 -left-4 w-8 h-8 border-b-2 border-l-2 border-emerald-500 opacity-60"></div>
+              </div>
+            </div>
+
+            <!-- Section Content -->
+            <div class="prose prose-lg prose-slate max-w-none">
+              <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-xl border border-emerald-100/50 relative overflow-hidden">
+                <!-- Decorative Corner Elements -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-400/10 to-transparent rounded-bl-full"></div>
+                <div class="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-500/10 to-transparent rounded-tr-full"></div>
+
+                <!-- Content with Arabic Typography -->
+                <div class="relative font-amiri text-xl md:text-2xl leading-loose text-slate-800 space-y-6">
+                  {section.content.split('\n\n').map((paragraph: string) => (
+                    <p class="relative">
+                      <span class="absolute -right-6 top-0 text-amber-500/30 text-3xl">❖</span>
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  })}
+
+  <!-- Closing Section -->
+  <section class="py-20 bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="closingPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+            <circle cx="50" cy="50" r="25" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+            <path d="M50 10 L50 90 M10 50 L90 50 M20 20 L80 80 M80 20 L20 80" stroke="currentColor" stroke-width="0.3" class="text-amber-400"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#closingPattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <!-- Ornamental Top Border -->
+        <div class="flex items-center justify-center mb-8">
+          <div class="h-px w-32 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+          <div class="mx-4">
+            <svg class="w-10 h-10 text-amber-400 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>
+          </div>
+          <div class="h-px w-32 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+        </div>
+
+        <!-- Closing Dua -->
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-12 border border-white/20 shadow-2xl">
+          <p class="text-3xl md:text-4xl font-amiri text-amber-200 leading-loose mb-8">
+            والحمد لله على نعمة الإسلام<br/>
+            وكفى بها نعمة
+          </p>
+          
+          <div class="h-px w-48 mx-auto bg-gradient-to-r from-transparent via-amber-400/50 to-transparent my-8"></div>
+          
+          <p class="text-2xl md:text-3xl font-amiri text-emerald-200 leading-relaxed">
+            وصلى الله على سيدنا محمد<br/>
+            وعلى آله وسلم
+          </p>
+        </div>
+
+        <!-- Bottom Ornamental Border -->
+        <div class="flex items-center justify-center mt-12">
+          <div class="h-px w-32 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+          <div class="mx-4">
+            <div class="flex gap-2">
+              <div class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
+              <div class="w-2 h-2 bg-amber-400 rounded-full animate-pulse delay-100"></div>
+              <div class="w-2 h-2 bg-amber-400 rounded-full animate-pulse delay-200"></div>
+            </div>
+          </div>
+          <div class="h-px w-32 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+        </div>
+
+        <!-- Back to Home Button -->
+        <div class="mt-12">
+          <a href="/" class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-full shadow-xl hover:shadow-2xl hover:shadow-amber-500/50 transition-all duration-300 transform hover:scale-105 text-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span>العودة للصفحة الرئيسية</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(45deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(45deg);
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Smooth gradient text animation */
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Arabic text enhancement */
+  .font-amiri {
+    font-feature-settings: "liga" 1, "calt" 1;
+    letter-spacing: 0.02em;
+  }
+
+  /* Glassmorphism enhancements */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+  }
+
+  .backdrop-blur-md {
+    backdrop-filter: blur(12px);
+  }
+</style>

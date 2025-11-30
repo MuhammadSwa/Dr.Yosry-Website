@@ -1,0 +1,97 @@
+---
+interface Props {
+  title: string;
+  content: string;
+  index: number;
+}
+
+const { title, content, index } = Astro.props;
+
+// Determine pattern ID based on index
+const patternId = `pattern-${index}`;
+---
+
+<section class="py-20 relative overflow-hidden bg-gradient-to-l from-emerald-900 via-emerald-800 to-emerald-950">
+  
+  <!-- Dynamic Background Pattern -->
+  <div class="absolute inset-0 opacity-30 pointer-events-none">
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id={patternId} x="0" y="0" width="150" height="150" patternUnits="userSpaceOnUse">
+          {index % 3 === 0 ? (
+            /* Pattern 1: Mandala */
+            <g>
+              <circle cx="75" cy="75" r="60" fill="none" stroke="currentColor" stroke-width="0.5" class="text-emerald-600"/>
+              <circle cx="75" cy="75" r="45" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-600"/>
+              <path d="M75 15 L75 135 M15 75 L135 75" stroke="currentColor" stroke-width="0.3" class="text-emerald-500"/>
+            </g>
+          ) : index % 3 === 1 ? (
+             /* Pattern 2: Star */
+            <g>
+              <path d="M75 20 L85 55 L120 55 L92 75 L102 110 L75 90 L48 110 L58 75 L30 55 L65 55 Z" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-600"/>
+              <circle cx="75" cy="75" r="50" fill="none" stroke="currentColor" stroke-width="0.5" class="text-emerald-600"/>
+            </g>
+          ) : (
+             /* Pattern 3: Flower */
+            <g>
+              <circle cx="75" cy="75" r="55" fill="none" stroke="currentColor" stroke-width="0.5" class="text-emerald-600"/>
+              <circle cx="75" cy="30" r="15" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-600"/>
+              <circle cx="75" cy="120" r="15" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-600"/>
+            </g>
+          )}
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#${patternId})`}/>
+    </svg>
+  </div>
+
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="max-w-5xl mx-auto">
+      
+      <!-- Section Title -->
+      <div class="text-center mb-12">
+        <div class="inline-block relative group">
+          
+          <!-- Top Ornament -->
+          <div class="flex justify-center mb-3">
+            <svg class="w-16 h-8" viewBox="0 0 100 50">
+              <path d="M10 40 Q50 10, 90 40" stroke="#d97706" stroke-width="2" fill="none"/>
+              <circle cx="50" cy="25" r="4" fill="#d97706"/>
+            </svg>
+          </div>
+
+          <!-- Title with Gold Gradient -->
+          <h2 class="text-4xl md:text-5xl font-bold font-amiri text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 px-8 py-2 drop-shadow-sm">
+            {title}
+          </h2>
+
+          <!-- Bottom Ornament -->
+          <div class="flex justify-center mt-3">
+            <svg class="w-16 h-8" viewBox="0 0 100 50">
+              <path d="M10 10 Q50 40, 90 10" stroke="#d97706" stroke-width="2" fill="none"/>
+              <circle cx="50" cy="25" r="4" fill="#d97706"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Card -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-xl border border-emerald-100/50 relative overflow-hidden">
+        <!-- Content Decorations -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-400/10 to-transparent rounded-bl-full pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-500/10 to-transparent rounded-tr-full pointer-events-none"></div>
+
+        <!-- Text -->
+        <div class="relative font-amiri text-xl md:text-2xl leading-loose text-slate-800 space-y-6">
+          {content.split('\n\n').map((paragraph) => (
+            <p class="relative">
+              <span class="absolute -right-6 top-0 text-amber-500/30 text-3xl select-none">❖</span>
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
