@@ -17,29 +17,26 @@ const { title = "فضيلة الدكتور يسري جبر | Dr. Yosry Gabr" } =
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		
-		<!-- Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
-		
+
 		<title>{title}</title>
 	</head>
-	
+
 	<!-- 
 		Theme Updates:
 		1. bg-emerald-950: Base dark background
 		2. text-emerald-50: Base light text
 		3. selection:bg-amber-500: Gold highlight color
 	-->
-	<body class="bg-emerald-950 text-emerald-50 font-cairo antialiased selection:bg-amber-500 selection:text-white overflow-x-hidden">
-	<Navbar />
+	<body
+		class="bg-emerald-950 text-emerald-50 font-cairo antialiased selection:bg-amber-500 selection:text-white overflow-x-hidden"
+	>
+		<Navbar />
 
-        <!-- Main Content: flex-grow pushes the footer down if content is short -->
-	<main class="flex-grow">
+		<!-- Main Content: flex-grow pushes the footer down if content is short -->
+		<main class="flex-grow">
 			<slot />
 		</main>
-    <Footer />
+		<Footer />
 	</body>
 </html>
 
@@ -54,7 +51,11 @@ const { title = "فضيلة الدكتور يسري جبر | Dr. Yosry Gabr" } =
 	}
 
 	::-webkit-scrollbar-thumb {
-		background: linear-gradient(to bottom, #d97706, #059669); /* amber-600 to emerald-600 */
+		background: linear-gradient(
+			to bottom,
+			#d97706,
+			#059669
+		); /* amber-600 to emerald-600 */
 		border-radius: 6px;
 		border: 3px solid #022c22; /* matches track for padding effect */
 	}
