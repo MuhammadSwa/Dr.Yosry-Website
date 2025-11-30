@@ -1,0 +1,212 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import { Image } from 'astro:assets';
+
+// Placeholder for book cover (You should replace these with actual imports)
+// import bookCover1 from "../assets/books/book1.jpg"; 
+// using a placeholder function for demo
+const getCover = (id: number) => `https://placehold.co/400x600/064e3b/d97706?text=Book+${id}&font=playfair`;
+
+const books = [
+  {
+    id: 1,
+    title: "في رحاب التفسير",
+    category: "التفسير وعلوم القرآن",
+    description: "موسوعة تفسيرية شاملة تجمع بين دقة اللفظ وعمق المعنى، مع إسقاطات واقعية معاصرة.",
+    pages: "540 صفحة",
+    year: "2023",
+    image: getCover(1),
+    pdfLink: "#",
+    buyLink: "#"
+  },
+  {
+    id: 2,
+    title: "الأنوار المحمدية",
+    category: "السيرة النبوية",
+    description: "دراسة تحليلية في الشمائل المحمدية والسيرة العطرة، بأسلوب يجمع بين الرواية والدراية.",
+    pages: "320 صفحة",
+    year: "2022",
+    image: getCover(2),
+    pdfLink: "#",
+    buyLink: "#"
+  },
+  {
+    id: 3,
+    title: "منهج السائرين",
+    category: "التزكية والتصوف",
+    description: "خارطة طريق للمريد في سلوكه إلى الله، مستنبطة من الكتاب والسنة وأقوال العارفين.",
+    pages: "280 صفحة",
+    year: "2021",
+    image: getCover(3),
+    pdfLink: "#",
+    buyLink: "#"
+  },
+  {
+    id: 4,
+    title: "فقه المعاملات المعاصر",
+    category: "الفقه الإسلامي",
+    description: "رؤية فقهية مؤصلة للقضايا المالية المستجدة في العصر الحديث.",
+    pages: "450 صفحة",
+    year: "2020",
+    image: getCover(4),
+    pdfLink: "#",
+    buyLink: "#"
+  },
+  {
+    id: 5,
+    title: "جواهر الحكم",
+    category: "المواعظ والرقائق",
+    description: "مجموعة من الحكم والمواعظ المختارة التي ترقق القلوب وتزكي النفوس.",
+    pages: "200 صفحة",
+    year: "2019",
+    image: getCover(5),
+    pdfLink: "#",
+    buyLink: "#"
+  },
+  {
+    id: 6,
+    title: "شرح الأربعين النووية",
+    category: "الحديث الشريف",
+    description: "شرح مبسط وعميق للأحاديث الجامعة التي عليها مدار الإسلام.",
+    pages: "380 صفحة",
+    year: "2018",
+    image: getCover(6),
+    pdfLink: "#",
+    buyLink: "#"
+  }
+];
+---
+
+<Layout title="مؤلفات الدكتور يسري جبر">
+
+  <!-- Hero Section -->
+  <section class="relative pt-32 pb-20 overflow-hidden bg-gradient-to-b from-emerald-950 to-emerald-900">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+       <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="booksHeroPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+             <path d="M50 0 L100 50 L50 100 L0 50 Z" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#booksHeroPattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10 text-center">
+      <div class="inline-block relative mb-4">
+         <h1 class="text-4xl md:text-6xl font-bold font-amiri text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-200 py-2">
+            مؤلفات الدكتور يسري جبر
+         </h1>
+         <div class="h-1 w-1/2 mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent rounded-full mt-2"></div>
+      </div>
+      <p class="text-xl text-emerald-100/80 font-amiri max-w-2xl mx-auto leading-relaxed">
+        نتاج علمي يجمع بين الأصالة والمعاصرة، وميراث يضيء دروب السالكين
+      </p>
+    </div>
+  </section>
+
+  <!-- Books Grid -->
+  <section class="py-20 bg-emerald-900 relative">
+     <!-- Ambient Lights -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-3xl"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        
+        {books.map((book, index) => (
+          <div class="group relative bg-white/5 border border-emerald-500/20 rounded-2xl p-6 hover:border-amber-400/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-950/50 backdrop-blur-sm">
+            
+            <!-- Book Cover Container -->
+            <div class="relative w-full aspect-[2/3] mb-8 perspective-1000">
+              <div class="relative w-full h-full transform transition-transform duration-500 group-hover:rotate-y-6 group-hover:scale-105 shadow-xl rounded-lg overflow-hidden">
+                <!-- Image -->
+                <img 
+                  src={book.image} 
+                  alt={book.title}
+                  class="w-full h-full object-cover"
+                />
+                
+                <!-- Shine Effect -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <!-- Spine Effect (Left Border) -->
+                <div class="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-r from-white/20 to-transparent"></div>
+              </div>
+              
+              <!-- Shadow below book -->
+              <div class="absolute -bottom-4 left-4 right-4 h-4 bg-black/40 blur-xl rounded-full transform scale-90 group-hover:scale-100 transition-transform duration-500"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="text-center relative">
+              <!-- Category Badge -->
+              <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-emerald-950 border border-emerald-500/30 px-4 py-1 rounded-full text-xs text-amber-300 font-bold shadow-lg">
+                {book.category}
+              </div>
+
+              <h3 class="text-2xl font-bold font-amiri text-white mb-3 group-hover:text-amber-400 transition-colors">
+                {book.title}
+              </h3>
+              
+              <p class="text-emerald-100/70 text-sm leading-loose mb-6 font-cairo line-clamp-3">
+                {book.description}
+              </p>
+
+              <!-- Meta Data -->
+              <div class="flex justify-center items-center gap-4 text-xs text-emerald-400/80 mb-6 border-t border-white/5 pt-4">
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                  {book.year}
+                </span>
+                <span class="h-1 w-1 rounded-full bg-emerald-500"></span>
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                  {book.pages}
+                </span>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex gap-3 justify-center">
+                <a href={book.pdfLink} class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg font-bold text-sm transition-colors border border-white/10 flex items-center justify-center gap-2 group/btn">
+                  <svg class="w-4 h-4 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                  تحميل PDF
+                </a>
+                <a href={book.buyLink} class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-2 rounded-lg font-bold text-sm transition-all shadow-lg shadow-amber-900/20 flex items-center justify-center gap-2">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                  شراء الورقي
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+
+      </div>
+      
+      <!-- Bottom CTA -->
+      <div class="mt-20 text-center">
+        <div class="inline-block p-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent w-full max-w-lg">
+          <p class="text-emerald-200 font-amiri text-lg py-4">
+            "العلم رحم بين أهله، والكتب أوعية العلم"
+          </p>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+  /* 3D Perspective for Book Covers */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .rotate-y-6 {
+    transform: rotateY(-10deg) rotateX(2deg);
+  }
+</style>

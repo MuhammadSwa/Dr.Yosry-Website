@@ -1,0 +1,177 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const isLive = false; // Toggle this based on actual live status or fetch from API
+
+const scheduleItems = [
+  {
+    day: "15",
+    month: "ديسمبر",
+    title: "درس التفسير الأسبوعي",
+    description: "سورة البقرة - الآيات 100-120",
+    time: "السبت 8:00 مساءً"
+  },
+  {
+    day: "18",
+    month: "ديسمبر",
+    title: "مجلس الذكر",
+    description: "أذكار المساء والصلاة الإبراهيمية",
+    time: "الثلاثاء 6:00 مساءً"
+  }
+];
+---
+
+<Layout>
+
+<section id="live" class="py-20 bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 text-white relative overflow-hidden">
+  
+  <!-- 1. Background Pattern -->
+  <div class="absolute inset-0 opacity-10 pointer-events-none">
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="livePattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+           <path d="M50 0 L100 50 L50 100 L0 50 Z" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+           <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#livePattern)"/>
+    </svg>
+  </div>
+
+  <!-- 2. Ambient Light -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <!-- Live Indicator -->
+      {isLive && (
+        <div class="inline-flex items-center gap-3 bg-red-600/90 backdrop-blur-sm border border-red-400/50 px-6 py-2 rounded-full mb-6 shadow-lg shadow-red-900/20 animate-pulse">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+          </span>
+          <span class="font-bold text-sm font-amiri tracking-wide">مباشر الآن</span>
+        </div>
+      )}
+
+      <!-- Ornamental Divider -->
+      <div class="flex justify-center mb-4">
+        <svg class="w-24 h-6 text-amber-400" viewBox="0 0 100 20" fill="none">
+          <path d="M0 10 Q50 20 100 10" stroke="currentColor" stroke-width="1"/>
+          <circle cx="50" cy="15" r="2" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <h2 class="text-3xl font-extrabold sm:text-4xl font-amiri mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200">
+        البث المباشر
+      </h2>
+      <p class="text-xl text-emerald-100/80 max-w-2xl mx-auto font-amiri leading-relaxed">
+        تابع الدروس والمحاضرات مباشرة مع فضيلة الدكتور
+      </p>
+    </div>
+
+    <!-- Live Stream Player Container -->
+    <div class="max-w-4xl mx-auto mb-16">
+      <div class="relative bg-emerald-950 rounded-2xl overflow-hidden shadow-2xl shadow-emerald-900/50 aspect-video border border-emerald-500/20 group">
+        
+        <!-- Decorative Corners -->
+        <div class="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-amber-500/30 rounded-tr-xl z-20"></div>
+        <div class="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-amber-500/30 rounded-bl-xl z-20"></div>
+
+        {isLive ? (
+          <iframe
+            src="https://www.youtube.com/embed/live_stream?channel=UCxxxxx"
+            title="Live Stream"
+            class="w-full h-full relative z-10"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          />
+        ) : (
+          <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-900 to-emerald-950 relative">
+             <!-- Pattern inside offline screen -->
+             <div class="absolute inset-0 opacity-20 bg-[url('/patterns/islamic-grid.svg')]"></div>
+             
+             <div class="text-center relative z-10 p-6">
+               <div class="inline-block p-4 rounded-full bg-emerald-800/50 border border-emerald-500/30 mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+               </div>
+               <h3 class="text-3xl font-bold mb-3 font-amiri text-amber-100">لا يوجد بث مباشر حالياً</h3>
+               <p class="text-emerald-200/70 font-amiri text-lg">سيتم الإعلان عن موعد البث القادم قريباً بإذن الله</p>
+             </div>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <!-- Upcoming Schedule -->
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+        <h3 class="text-2xl font-bold text-amber-300 font-amiri">الجدول القادم</h3>
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {scheduleItems.map((item) => (
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-emerald-400/20 hover:border-amber-400/40 transition-all duration-300 group hover:-translate-y-1">
+            <div class="flex items-start gap-5">
+              <!-- Date Box -->
+              <div class="bg-gradient-to-b from-amber-500 to-amber-600 rounded-xl p-3 text-center min-w-[70px] shadow-lg shadow-amber-900/20 text-white">
+                <div class="text-2xl font-bold font-amiri leading-none">{item.day}</div>
+                <div class="text-xs font-medium opacity-90 mt-1">{item.month}</div>
+              </div>
+              
+              <div class="flex-1">
+                <h4 class="font-bold text-xl mb-2 font-amiri text-emerald-50 group-hover:text-amber-300 transition-colors">
+                  {item.title}
+                </h4>
+                <p class="text-emerald-200/80 text-sm mb-3 font-amiri leading-relaxed">
+                  {item.description}
+                </p>
+                <div class="flex items-center gap-2 text-sm text-amber-400/90 font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {item.time}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Notification Signup -->
+    <div class="mt-16 text-center">
+      <div class="bg-emerald-900/40 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-emerald-500/20 max-w-2xl mx-auto relative overflow-hidden">
+        <!-- Shine effect -->
+        <div class="absolute top-0 right-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+
+        <h4 class="text-xl md:text-2xl font-amiri text-white mb-6">
+          احصل على إشعار عند بدء البث المباشر
+        </h4>
+        
+        <form class="flex flex-col sm:flex-row gap-3 relative z-10">
+          <input
+            type="email"
+            placeholder="البريد الإلكتروني"
+            class="flex-1 px-6 py-3 rounded-full bg-emerald-950/50 border border-emerald-500/30 text-white placeholder-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition-all font-amiri"
+            required
+          />
+          <button type="submit" class="px-8 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-full font-bold shadow-lg hover:shadow-amber-500/20 transition-all duration-300 transform hover:scale-105 font-amiri whitespace-nowrap">
+            اشترك الآن
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>
+</Layout>

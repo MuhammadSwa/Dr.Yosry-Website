@@ -1,10 +1,11 @@
 export const navLinks = [
-  { label: "السيرة الذاتية", href: "#bio" },
+  // { label: "السيرة الذاتية", href: "#bio" },
   // { label: "الأخبار", href: "#news" },
   { label: "الدروس", href: "#lessons" },
-  { label: "صوتيات", href: "#audio" },
-  // { label: "البث المباشر", href: "#live" },
-  { label: "الكتب و المؤلفات", href: "#books" },
+  { label: "الصوتيات", href: "#audio" },
+  { label: "البث المباشر", href: "/live" },
+  { label: "الكتب و المؤلفات", href: "/books" },
+  { href: "/social", label: "المنصات الرسمية" }, // <--- Add this line
   // { label: "تواصل", href: "#contact" },
 ];
 
@@ -54,6 +55,7 @@ export const socialLinks = {
   facebook: "https://facebook.com/dryosrygabr",
   twitter: "https://twitter.com/dryosrygabr",
   instagram: "https://instagram.com/dryosrygabr",
+  telegram: "https://t.me/dryosrygabr"
 };
 
 // Audio Lessons Data

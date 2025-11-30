@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/Navbar.astro";
 import Hero from "../components/Hero.astro";
 import News from "../components/News";
 import Lessons from "../components/Lessons";
@@ -8,13 +7,9 @@ import YouTube from "../components/YouTube";
 import Audio from "../components/Audio";
 import LiveStream from "../components/LiveStream";
 import Books from "../components/Books";
-import Testimonials from "../components/Testimonials";
-import Contact from "../components/Contact";
-import Footer from "../components/Footer";
 ---
 
 <Layout>
-	<Navbar />
 	<main>
 		<Hero />
 		<News />
@@ -23,8 +18,5 @@ import Footer from "../components/Footer";
 		<Audio client:load />
 		<LiveStream />
 		<Books />
-		<Testimonials client:load />
-		<Contact client:load />
 	</main>
-	<Footer />
 </Layout>

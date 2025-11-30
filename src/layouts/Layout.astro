@@ -1,5 +1,13 @@
 ---
 import "../styles/global.css";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+	title?: string;
+}
+
+const { title = "فضيلة الدكتور يسري جبر | Dr. Yosry Gabr" } = Astro.props;
 ---
 
 <!doctype html>
@@ -9,12 +17,55 @@ import "../styles/global.css";
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		
+		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
-		<title>فضيلة الدكتور يسري جبر | Dr. Yosry Gabr</title>
+		
+		<title>{title}</title>
 	</head>
-	<body class="bg-slate-50 text-slate-900 font-cairo antialiased selection:bg-emerald-500 selection:text-white overflow-x-hidden">
-		<slot />
+	
+	<!-- 
+		Theme Updates:
+		1. bg-emerald-950: Base dark background
+		2. text-emerald-50: Base light text
+		3. selection:bg-amber-500: Gold highlight color
+	-->
+	<body class="bg-emerald-950 text-emerald-50 font-cairo antialiased selection:bg-amber-500 selection:text-white overflow-x-hidden">
+	<Navbar />
+
+        <!-- Main Content: flex-grow pushes the footer down if content is short -->
+	<main class="flex-grow">
+			<slot />
+		</main>
+    <Footer />
 	</body>
 </html>
+
+<style is:global>
+	/* Custom Scrollbar for Webkit browsers (Chrome, Safari, Edge) */
+	::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: #022c22; /* emerald-950 */
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: linear-gradient(to bottom, #d97706, #059669); /* amber-600 to emerald-600 */
+		border-radius: 6px;
+		border: 3px solid #022c22; /* matches track for padding effect */
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: #d97706; /* amber-600 */
+	}
+
+	/* Firefox Scrollbar */
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: #d97706 #022c22;
+	}
+</style>

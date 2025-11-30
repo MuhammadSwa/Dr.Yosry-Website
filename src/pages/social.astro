@@ -1,0 +1,277 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// Data Structure for Social Links
+const socialMedia = [
+  // --- Facebook Section ---
+  {
+    id: "fb-ar",
+    platform: "Facebook",
+    title: "فيسبوك (العربية)",
+    handle: "@DrYosryGabr",
+    url: "https://www.facebook.com/DrYosryGabr", // Replace with actual
+    color: "hover:border-blue-500 hover:shadow-blue-500/20",
+    iconColor: "group-hover:text-blue-500",
+    bgHover: "group-hover:bg-blue-500/10",
+    description: "الصفحة الرسمية باللغة العربية",
+    icon: "facebook"
+  },
+  {
+    id: "fb-en",
+    platform: "Facebook",
+    title: "Facebook (English)",
+    handle: "@DrYosryGabrEn",
+    url: "#", 
+    color: "hover:border-blue-400 hover:shadow-blue-400/20",
+    iconColor: "group-hover:text-blue-400",
+    bgHover: "group-hover:bg-blue-400/10",
+    description: "The Official Page in English",
+    icon: "facebook"
+  },
+  {
+    id: "fb-group",
+    platform: "Facebook Group",
+    title: "مجموعة محبي الشيخ",
+    handle: "Official Group",
+    url: "#",
+    color: "hover:border-indigo-500 hover:shadow-indigo-500/20",
+    iconColor: "group-hover:text-indigo-500",
+    bgHover: "group-hover:bg-indigo-500/10",
+    description: "للنقاشات والتواصل بين الطلاب",
+    icon: "users"
+  },
+  {
+    id: "fb-awrad",
+    platform: "Facebook Page",
+    title: "أوراد الطريقة الصديقية",
+    handle: "Awrad Page",
+    url: "#",
+    color: "hover:border-emerald-400 hover:shadow-emerald-400/20",
+    iconColor: "group-hover:text-emerald-400",
+    bgHover: "group-hover:bg-emerald-400/10",
+    description: "صفحة خاصة بالأوراد والأذكار",
+    icon: "book"
+  },
+
+  // --- Instagram Section ---
+  {
+    id: "ig-ar",
+    platform: "Instagram",
+    title: "انستجرام (العربية)",
+    handle: "@dryosrygabr",
+    url: "#",
+    color: "hover:border-pink-500 hover:shadow-pink-500/20",
+    iconColor: "group-hover:text-pink-500",
+    bgHover: "group-hover:bg-pink-500/10",
+    description: "مقاطع قصيرة وصور حصرية",
+    icon: "instagram"
+  },
+  {
+    id: "ig-en",
+    platform: "Instagram",
+    title: "Instagram (English)",
+    handle: "@dryosrygabr.en",
+    url: "#",
+    color: "hover:border-purple-500 hover:shadow-purple-500/20",
+    iconColor: "group-hover:text-purple-500",
+    bgHover: "group-hover:bg-purple-500/10",
+    description: "Short clips & quotes in English",
+    icon: "instagram"
+  },
+
+  // --- Media & Video ---
+  {
+    id: "youtube",
+    platform: "YouTube",
+    title: "قناة اليوتيوب الرسمية",
+    handle: "Dr. Yosry Gabr",
+    url: "#",
+    color: "hover:border-red-500 hover:shadow-red-500/20",
+    iconColor: "group-hover:text-red-500",
+    bgHover: "group-hover:bg-red-500/10",
+    description: "الدروس الكاملة والبث المباشر",
+    icon: "youtube"
+  },
+  {
+    id: "soundcloud",
+    platform: "SoundCloud",
+    title: "ساوند كلاود",
+    handle: "Audio Lectures",
+    url: "#",
+    color: "hover:border-orange-500 hover:shadow-orange-500/20",
+    iconColor: "group-hover:text-orange-500",
+    bgHover: "group-hover:bg-orange-500/10",
+    description: "مكتبة صوتية للخطب والدروس",
+    icon: "soundcloud"
+  },
+  {
+    id: "tiktok",
+    platform: "TikTok",
+    title: "تيك توك",
+    handle: "@dryosrygabr",
+    url: "#",
+    color: "hover:border-cyan-400 hover:shadow-cyan-400/20",
+    iconColor: "group-hover:text-cyan-400",
+    bgHover: "group-hover:bg-cyan-400/10",
+    description: "مقتطفات سريعة ومواعظ",
+    icon: "tiktok"
+  },
+
+  // --- Messaging & Updates ---
+  {
+    id: "telegram",
+    platform: "Telegram",
+    title: "قناة التيليجرام",
+    handle: "Official Channel",
+    url: "#",
+    color: "hover:border-sky-500 hover:shadow-sky-500/20",
+    iconColor: "group-hover:text-sky-500",
+    bgHover: "group-hover:bg-sky-500/10",
+    description: "آخر التحديثات والإعلانات",
+    icon: "telegram"
+  },
+  {
+    id: "twitter",
+    platform: "Twitter (X)",
+    title: "تويتر (X)",
+    handle: "@dryosrygabr",
+    url: "#",
+    color: "hover:border-gray-400 hover:shadow-gray-400/20",
+    iconColor: "group-hover:text-gray-100",
+    bgHover: "group-hover:bg-white/10",
+    description: "التغريدات والخواطر",
+    icon: "twitter"
+  },
+];
+---
+
+<Layout title="الصفحات الرسمية | د. يسري جبر">
+
+  <!-- Hero Section -->
+  <section class="relative pt-32 pb-16 overflow-hidden bg-gradient-to-b from-emerald-950 to-emerald-900">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+       <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="socialHeroPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+             <path d="M50 0 L100 50 L50 100 L0 50 Z" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+             <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" stroke-width="0.5" class="text-amber-300"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#socialHeroPattern)"/>
+      </svg>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10 text-center">
+      <div class="inline-block relative mb-6">
+         <h1 class="text-4xl md:text-6xl font-bold font-amiri text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-200 py-2 leading-normal">
+            الصفحات الرسمية
+         </h1>
+         <div class="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent rounded-full mt-2"></div>
+      </div>
+      <p class="text-xl text-emerald-100/80 font-amiri max-w-2xl mx-auto leading-relaxed">
+        تابعوا فضيلة الدكتور يسري جبر عبر المنصات المختلفة لتصلكم الدروس والمواعظ أينما كنتم
+      </p>
+    </div>
+  </section>
+
+  <!-- Social Links Grid -->
+  <section class="py-16 bg-emerald-900 relative min-h-screen">
+     <!-- Ambient Lights -->
+    <div class="absolute top-1/4 right-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-1/4 left-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="container mx-auto px-4 sm:px-6 relative z-10">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        
+        {socialMedia.map((link) => (
+          <a 
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`group relative flex items-center gap-5 p-5 bg-white/5 backdrop-blur-md border border-emerald-500/20 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-950/50 ${link.color}`}
+          >
+            <!-- Icon Container -->
+            <div class={`flex-shrink-0 w-16 h-16 rounded-xl bg-emerald-950/50 border border-emerald-500/30 flex items-center justify-center transition-colors duration-300 ${link.bgHover}`}>
+              <div class={`text-emerald-200 transition-colors duration-300 ${link.iconColor}`}>
+                
+                {/* Facebook Icon */}
+                {link.icon === "facebook" && (
+                  <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                )}
+                
+                {/* Users/Group Icon */}
+                {link.icon === "users" && (
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                )}
+
+                {/* Book/Awrad Icon */}
+                {link.icon === "book" && (
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                )}
+
+                {/* Instagram Icon */}
+                {link.icon === "instagram" && (
+                  <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                )}
+
+                {/* YouTube Icon */}
+                {link.icon === "youtube" && (
+                  <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                )}
+
+                {/* SoundCloud Icon */}
+                {link.icon === "soundcloud" && (
+                  <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M11.56 8.87V17h.05v-8.13h-.05zM10.93 9.15v7.85h.05v-7.85h-.05zM10.3 9.7v7.3h.05V9.7h-.05zM9.67 10.53v6.47h.05v-6.47h-.05zM9.04 11.23v5.77h.05v-5.77h-.05zM8.42 11.83v5.17h.05v-5.17h-.05zM7.78 12.57v4.43h.06v-4.43h-.06zM7.15 13.06v3.94h.05v-3.94h-.05zM6.52 13.5v3.5h.05v-3.5h-.05zM5.9 14.15v2.85h.05v-2.85h-.05zM5.26 14.65v2.35h.05v-2.35h-.05zM4.63 15.17v1.83h.05v-1.83h-.05zM4 15.6v1.4h.05v-1.4H4zm-1.8 1.12v.28h1.16v-.28H2.2zm19.6-4.5a3.3 3.3 0 0 0-3.23 2.66 4.7 4.7 0 0 0-2.84-1 4.74 4.74 0 0 0-4.17 2.45V8.2c0-.1-.02-.19-.05-.28a.5.5 0 0 0-.27-.27c-.1-.03-.19-.05-.28-.05h-.62c-.36 0-.63.29-.63.63v8.74c0 .34.27.62.62.62h13.06c1.82 0 3.3-1.48 3.3-3.3 0-1.81-1.48-3.3-3.3-3.3z"/></svg>
+                )}
+
+                {/* Telegram Icon */}
+                {link.icon === "telegram" && (
+                   <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 11.944 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                )}
+
+                 {/* TikTok Icon */}
+                 {link.icon === "tiktok" && (
+                   <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                )}
+
+                {/* Twitter/X Icon */}
+                {link.icon === "twitter" && (
+                   <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                )}
+
+              </div>
+            </div>
+
+            <!-- Text Content -->
+            <div class="flex-1">
+              <p class="text-xs text-amber-500 font-bold mb-1 uppercase tracking-wider">{link.platform}</p>
+              <h3 class="text-xl font-bold font-amiri text-white mb-1 group-hover:text-amber-200 transition-colors">{link.title}</h3>
+              <p class="text-emerald-100/60 text-sm">{link.description}</p>
+            </div>
+
+            <!-- Arrow Icon -->
+            <div class={`absolute left-5 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ${link.iconColor}`}>
+              <svg class="w-6 h-6 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </div>
+
+          </a>
+        ))}
+
+      </div>
+
+      <!-- Bottom Decorative Element -->
+      <div class="mt-20 text-center">
+         <div class="inline-flex items-center gap-2 text-emerald-500/30">
+            <span class="h-px w-12 bg-emerald-500/30"></span>
+            <span class="text-2xl">❖</span>
+            <span class="h-px w-12 bg-emerald-500/30"></span>
+         </div>
+      </div>
+      
+    </div>
+  </section>
+</Layout>
