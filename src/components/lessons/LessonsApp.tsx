@@ -283,93 +283,138 @@ export default function LessonsApp(props: LessonsAppProps) {
       {/* Main Content */}
       <main class="container mx-auto px-4 py-8">
         <div class="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar - Categories & Playlists */}
-          <aside class="lg:w-72 shrink-0">
-            <div class="sticky top-24 space-y-6">
-              {/* Categories */}
-              <div class="bg-emerald-900/50 rounded-2xl p-4 border border-emerald-700/50">
-                <h3 class="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                  </svg>
-                  التصنيفات
-                </h3>
-                <div class="space-y-2">
-                  <button
-                    onClick={() => handleCategoryClick("all")}
-                    class={`w-full text-right px-4 py-2 rounded-lg transition-all duration-200 ${
-                      selectedCategory() === "all"
-                        ? "bg-amber-500 text-emerald-950 font-bold"
-                        : "hover:bg-emerald-800 text-emerald-200"
-                    }`}
-                  >
-                    الكل
-                  </button>
-                  <button
-                    onClick={() => handleCategoryClick("channel")}
-                    class={`w-full text-right px-4 py-2 rounded-lg transition-all duration-200 ${
-                      selectedCategory() === "channel"
-                        ? "bg-amber-500 text-emerald-950 font-bold"
-                        : "hover:bg-emerald-800 text-emerald-200"
-                    }`}
-                  >
-                    📺 القناة
-                  </button>
-                  <For each={props.categories}>
-                    {(category) => {
-                      const hasPlaylists = props.playlists.some(p => p.category === category);
-                      return (
-                        <Show when={hasPlaylists}>
+          {/* Sidebar - Playlists & Categories */}
+          <aside class="lg:w-80 shrink-0 order-2 lg:order-1">
+            <div class="sticky top-24 flex flex-col gap-4 max-h-[calc(100vh-8rem)]">
+              {/* Playlists - On Top */}
+              <Show when={selectedCategory() !== "channel"}>
+                <div class="bg-emerald-900/50 rounded-2xl border border-emerald-700/50 flex flex-col min-h-0 flex-1">
+                  <div class="p-4 border-b border-emerald-700/50 shrink-0">
+                    <h3 class="text-lg font-bold text-amber-400 flex items-center justify-between">
+                      <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        قوائم التشغيل
+                      </span>
+                      <span class="text-sm font-normal text-emerald-400">
+                        {categoryPlaylists().length} قائمة
+                      </span>
+                    </h3>
+                  </div>
+                  <div class="overflow-y-auto flex-1 custom-scrollbar">
+                    <div class="p-2 space-y-1">
+                      {/* Clear playlist selection button */}
+                      <Show when={selectedPlaylist()}>
+                        <button
+                          onClick={() => setSelectedPlaylist(null)}
+                          class="w-full text-right px-3 py-2 rounded-lg text-amber-400 hover:bg-emerald-800 transition-all duration-200 text-sm flex items-center gap-2"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          عرض الكل
+                        </button>
+                      </Show>
+                      <For each={categoryPlaylists()}>
+                        {(playlist) => (
                           <button
-                            onClick={() => handleCategoryClick(category)}
-                            class={`w-full text-right px-4 py-2 rounded-lg transition-all duration-200 ${
-                              selectedCategory() === category
-                                ? "bg-amber-500 text-emerald-950 font-bold"
-                                : "hover:bg-emerald-800 text-emerald-200"
+                            onClick={() => handlePlaylistClick(playlist.id)}
+                            class={`w-full text-right px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+                              selectedPlaylist() === playlist.id
+                                ? "bg-amber-500/20 border-r-4 border-amber-500 text-amber-400"
+                                : "hover:bg-emerald-800/70 text-emerald-200 border-r-4 border-transparent"
                             }`}
                           >
-                            {category}
+                            <div class="flex items-start justify-between gap-2">
+                              <div class="min-w-0 flex-1">
+                                <div class={`font-medium text-sm line-clamp-2 ${
+                                  selectedPlaylist() === playlist.id ? "text-amber-400" : "group-hover:text-emerald-100"
+                                }`}>
+                                  {playlist.name}
+                                </div>
+                              </div>
+                              <div class={`text-xs shrink-0 px-2 py-0.5 rounded-full ${
+                                selectedPlaylist() === playlist.id 
+                                  ? "bg-amber-500/30 text-amber-300" 
+                                  : "bg-emerald-800 text-emerald-400"
+                              }`}>
+                                {playlist.videos.length}
+                              </div>
+                            </div>
                           </button>
-                        </Show>
-                      );
-                    }}
-                  </For>
-                </div>
-              </div>
-
-              {/* Playlists */}
-              <Show when={selectedCategory() !== "channel"}>
-                <div class="bg-emerald-900/50 rounded-2xl p-4 border border-emerald-700/50">
-                  <h3 class="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
-                    قوائم التشغيل
-                  </h3>
-                  <div class="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
-                    <For each={categoryPlaylists()}>
-                      {(playlist) => (
-                        <button
-                          onClick={() => handlePlaylistClick(playlist.id)}
-                          class={`w-full text-right px-4 py-3 rounded-lg transition-all duration-200 ${
-                            selectedPlaylist() === playlist.id
-                              ? "bg-amber-500/20 border border-amber-500 text-amber-400"
-                              : "hover:bg-emerald-800 text-emerald-200 border border-transparent"
-                          }`}
-                        >
-                          <div class="font-medium">{playlist.name}</div>
-                          <div class="text-sm text-emerald-400">{playlist.videos.length} فيديو</div>
-                        </button>
-                      )}
-                    </For>
+                        )}
+                      </For>
+                    </div>
                   </div>
                 </div>
               </Show>
+
+              {/* Categories - At Bottom */}
+              <div class="bg-emerald-900/50 rounded-2xl border border-emerald-700/50 shrink-0">
+                <div class="p-4 border-b border-emerald-700/50">
+                  <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                    </svg>
+                    التصنيفات
+                  </h3>
+                </div>
+                <div class="p-2">
+                  <div class="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => handleCategoryClick("all")}
+                      class={`px-3 py-1.5 rounded-full text-sm transition-all duration-200 ${
+                        selectedCategory() === "all"
+                          ? "bg-amber-500 text-emerald-950 font-bold"
+                          : "bg-emerald-800/50 hover:bg-emerald-800 text-emerald-200"
+                      }`}
+                    >
+                      الكل
+                    </button>
+                    <button
+                      onClick={() => handleCategoryClick("channel")}
+                      class={`px-3 py-1.5 rounded-full text-sm transition-all duration-200 ${
+                        selectedCategory() === "channel"
+                          ? "bg-amber-500 text-emerald-950 font-bold"
+                          : "bg-emerald-800/50 hover:bg-emerald-800 text-emerald-200"
+                      }`}
+                    >
+                      📺 القناة
+                    </button>
+                    <For each={props.categories}>
+                      {(category) => {
+                        const hasPlaylists = props.playlists.some(p => p.category === category);
+                        const playlistCount = props.playlists.filter(p => p.category === category).length;
+                        return (
+                          <Show when={hasPlaylists}>
+                            <button
+                              onClick={() => handleCategoryClick(category)}
+                              class={`px-3 py-1.5 rounded-full text-sm transition-all duration-200 flex items-center gap-1.5 ${
+                                selectedCategory() === category
+                                  ? "bg-amber-500 text-emerald-950 font-bold"
+                                  : "bg-emerald-800/50 hover:bg-emerald-800 text-emerald-200"
+                              }`}
+                            >
+                              {category}
+                              <span class={`text-xs ${
+                                selectedCategory() === category ? "text-emerald-800" : "text-emerald-400"
+                              }`}>
+                                ({playlistCount})
+                              </span>
+                            </button>
+                          </Show>
+                        );
+                      }}
+                    </For>
+                  </div>
+                </div>
+              </div>
             </div>
           </aside>
 
           {/* Video Grid */}
-          <div class="flex-1">
+          <div class="flex-1 order-1 lg:order-2">
             {/* Controls Bar */}
             <div id="video-grid" class="flex flex-wrap items-center justify-between gap-4 mb-6 scroll-mt-24">
               <div class="text-emerald-300">
@@ -660,18 +705,30 @@ export default function LessonsApp(props: LessonsAppProps) {
 
       {/* Custom Scrollbar Styles */}
       <style>{`
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: #d97706 rgba(4, 120, 87, 0.2);
+          scroll-behavior: smooth;
+        }
         .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
+          width: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
           background: rgba(4, 120, 87, 0.2);
-          border-radius: 3px;
+          border-radius: 4px;
+          margin: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #d97706;
-          border-radius: 3px;
+          background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
+          border-radius: 4px;
+          border: 2px solid transparent;
+          background-clip: padding-box;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+          background-clip: padding-box;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:active {
           background: #f59e0b;
         }
       `}</style>
