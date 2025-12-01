@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ascorbic/youtube-loader':
+        specifier: ^0.0.2
+        version: 0.0.2(astro@5.16.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.3)(typescript@5.9.3))
       '@astro-community/astro-embed-youtube':
         specifier: ^0.5.9
         version: 0.5.9(astro@5.16.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.3)(typescript@5.9.3))
@@ -31,6 +34,16 @@ importers:
         version: 4.1.17
 
 packages:
+
+  '@ascorbic/loader-utils@1.0.2':
+    resolution: {integrity: sha512-pg43g83gojVtEsAkXfjWuzJhuXneJp4wM/leBftGkCPV3yxKgB92EWA+nWu735BgbBMph3P7DrVqVc3ikt+dJA==}
+    peerDependencies:
+      astro: ^4.14.0 || ^5.0.0-beta.0
+
+  '@ascorbic/youtube-loader@0.0.2':
+    resolution: {integrity: sha512-jUEWAM47GHIVavApxtIA1oiD1LcSjynzvC5SF1mDSt9EFAeVf3Cg9mqKRSL2ng15D6w3uj6USAJ/T1xGeXLD/Q==}
+    peerDependencies:
+      astro: ^4.14.0 || ^5.0.0
 
   '@astro-community/astro-embed-youtube@0.5.9':
     resolution: {integrity: sha512-8Uk2SKbyZVb+jxwqSAMoEpQo+063XYwCI3yRy9cbkyHpu09mDabGZNTF5XrL8CKr3NtR5haBkeYK/kSuKUkJ/g==}
@@ -1925,6 +1938,16 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@ascorbic/loader-utils@1.0.2(astro@5.16.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.3)(typescript@5.9.3))':
+    dependencies:
+      astro: 5.16.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.3)(typescript@5.9.3)
+
+  '@ascorbic/youtube-loader@0.0.2(astro@5.16.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.3)(typescript@5.9.3))':
+    dependencies:
+      '@ascorbic/loader-utils': 1.0.2(astro@5.16.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.3)(typescript@5.9.3))
+      astro: 5.16.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.3)(typescript@5.9.3)
+      zod: 3.25.76
 
   '@astro-community/astro-embed-youtube@0.5.9(astro@5.16.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.3)(typescript@5.9.3))':
     dependencies:

@@ -1,7 +1,8 @@
 export const navLinks = [
   // { label: "السيرة الذاتية", href: "#bio" },
   // { label: "الأخبار", href: "#news" },
-  { label: "الدروس", href: "#lessons" },
+  { label: "الدروس", href: "/lessons" },
+  { label: "مركز الدراسة", href: "/dashboard" },
   { label: "الصوتيات", href: "#audio" },
   { label: "البث المباشر", href: "/live" },
   { label: "الكتب و المؤلفات", href: "/books" },

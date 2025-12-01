@@ -1,0 +1,45 @@
+---
+import Layout from "../layouts/Layout.astro";
+import StudyDashboard from "../components/lessons/Dashboard";
+import DataBackup from "../components/lessons/DataBackup";
+import NotesBookmarksBrowser from "../components/lessons/NotesBookmarksBrowser";
+import { 
+  loadSimpleVideoInfo, 
+  playlists, 
+  categories 
+} from "../lib/videoLoader";
+
+// Load all video info using the centralized loader
+const videosData = await loadSimpleVideoInfo();
+
+// Playlist info for the browser
+const playlistsData = playlists.map(p => ({
+  id: p.id,
+  name: p.name,
+  category: p.category,
+}));
+
+// Simple videos data for dashboard (without playlist info for the stats component)
+const simpleVideosData = videosData.map(v => ({
+  id: v.id,
+  title: v.title,
+  thumbnail: v.thumbnail,
+  duration: v.duration,
+  publishedAt: v.publishedAt,
+}));
+---
+
+<Layout title="لوحة التحكم | مركز الدراسة">
+  <StudyDashboard client:load videos={simpleVideosData} />
+  
+  <!-- Notes & Bookmarks Browser -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 space-y-6">
+    <NotesBookmarksBrowser 
+      client:load 
+      videos={videosData} 
+      playlists={playlistsData}
+      categories={categories}
+    />
+    <DataBackup client:load />
+  </div>
+</Layout>
