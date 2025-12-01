@@ -1,46 +1,91 @@
-# Astro Starter Kit: Basics
+# Dr. Yosry Website
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+موقع فضيلة الدكتور يسري جبر - أستاذ الفقه والتصوف
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🎬 YouTube Caching System
+
+This site uses a custom YouTube data caching system to:
+- Avoid hitting YouTube API rate limits during builds
+- Cache video data locally for faster builds
+- Support large playlists (500+ videos)
+
+### Workflow
+
+1. **Set up your API key** in `.env`:
+   ```
+   YOUTUBE_API_KEY=your_api_key_here
+   ```
+
+2. **Warm up the cache** before building:
+   ```sh
+   pnpm cache:warmup
+   ```
+   This fetches all playlist data sequentially with rate limiting.
+
+3. **Build the site**:
+   ```sh
+   pnpm build
+   ```
+   During build, only cached data is used (no API calls).
+
+### Cache Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm cache:status` | Show cache statistics and missing playlists |
+| `pnpm cache:warmup` | Fetch all playlists (uses existing cache when valid) |
+| `pnpm cache:refresh` | Force refresh all playlists (ignores cache) |
+| `pnpm cache:validate` | Check if cache is valid and complete |
+| `pnpm cache:complete` | Mark all playlists as "complete" (no refetch needed) |
+| `pnpm cache:clear` | Delete all cached data |
+
+### Adding New Playlists
+
+1. Edit `src/lib/lessons.ts` and add your playlist to the `playlists` array
+2. Run `pnpm cache:warmup` to fetch the new playlist
+3. Run `pnpm build` to rebuild the site
+
+### Cache Configuration
+
+- **Cache TTL**: 24 hours (non-complete playlists are refetched after this time)
+- **Complete playlists**: Never refetched (set `isComplete: true` in playlist config)
+- **Cache location**: `.youtube-cache/` (gitignored)
 
 ## 🚀 Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
-
 ```text
 /
+├── .youtube-cache/        # YouTube data cache (gitignored)
 ├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
+├── scripts/
+│   └── cache-manager.ts   # Cache management CLI
+├── src/
+│   ├── components/
+│   ├── content/
+│   │   └── config.ts      # Content collections config
+│   ├── layouts/
+│   ├── lib/
+│   │   ├── cached-youtube-loader.ts  # Astro content loader
+│   │   ├── lessons.ts     # Playlist configuration
+│   │   ├── youtube-cache.ts          # Cache implementation
+│   │   └── videoLoader.ts # Video loading utilities
+│   └── pages/
 └── package.json
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
 ## 🧞 Commands
 
-All commands are run from the root of the project, from a terminal:
+| Command | Action |
+|---------|--------|
+| `pnpm install` | Install dependencies |
+| `pnpm dev` | Start dev server at `localhost:4321` |
+| `pnpm build` | Build production site to `./dist/` |
+| `pnpm preview` | Preview build locally |
+| `pnpm cache:warmup` | Warm up YouTube cache |
+| `pnpm cache:status` | Show cache status |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Environment Variables
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Variable | Description |
+|----------|-------------|
+| `YOUTUBE_API_KEY` | YouTube Data API v3 key (required for cache warmup) |

@@ -6,10 +6,16 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "cache:status": "npx tsx scripts/cache-manager.ts status",
+    "cache:clear": "npx tsx scripts/cache-manager.ts clear",
+    "cache:warmup": "npx tsx scripts/cache-manager.ts warmup",
+    "cache:refresh": "npx tsx scripts/cache-manager.ts refresh",
+    "cache:complete": "npx tsx scripts/cache-manager.ts complete",
+    "cache:validate": "npx tsx scripts/cache-manager.ts validate",
+    "prebuild": "echo '⚠️  Make sure cache is ready! Run pnpm cache:warmup if needed.'"
   },
   "dependencies": {
-    "@ascorbic/youtube-loader": "^0.0.2",
     "@astro-community/astro-embed-youtube": "^0.5.9",
     "@astrojs/solid-js": "^5.1.3",
     "@tailwindcss/vite": "^4.1.17",
@@ -17,5 +23,8 @@
     "sharp": "^0.34.5",
     "solid-js": "^1.9.10",
     "tailwindcss": "^4.1.17"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4"
   }
 }

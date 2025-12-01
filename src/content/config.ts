@@ -1,6 +1,6 @@
 // src/content/config.ts
 import { defineCollection } from "astro:content";
-import { youTubeLoader } from "@ascorbic/youtube-loader";
+import { cachedPlaylistLoader, cachedChannelLoader } from "../lib/cached-youtube-loader";
 import { playlists, channelInfo, getCollectionName } from "../lib/lessons";
 
 /**
@@ -10,20 +10,27 @@ import { playlists, channelInfo, getCollectionName } from "../lib/lessons";
  * Collections are automatically created based on the playlists
  * defined in src/lib/lessons.ts
  * 
+ * Uses a custom caching system to:
+ * - Avoid hitting YouTube API rate limits
+ * - Cache data locally in .youtube-cache/
+ * - Support marking playlists as "complete" (no refetch needed)
+ * 
+ * IMPORTANT: Run `pnpm cache:warmup` before building!
+ * During build, the loader uses cache-only mode and won't make API calls.
+ * 
  * DO NOT manually add playlist collections here!
  * Just add them to the playlists array in lessons.ts
  * ===============================================
  */
 
+const API_KEY = import.meta.env.YOUTUBE_API_KEY;
+
 // Load videos from the main channel
 const channelVideos = defineCollection({
-  loader: youTubeLoader({
-    type: "channel",
-    apiKey: import.meta.env.YOUTUBE_API_KEY,
+  loader: cachedChannelLoader({
+    apiKey: API_KEY,
     channelId: channelInfo.id,
-    maxResults: 50,
-    order: "date",
-    fetchFullDetails: true,
+    maxResults: 100, // Recent channel videos
   }),
 });
 
@@ -33,12 +40,12 @@ const playlistCollections: Record<string, ReturnType<typeof defineCollection>> =
 playlists.forEach((playlist) => {
   const collectionName = getCollectionName(playlist.id);
   playlistCollections[collectionName] = defineCollection({
-    loader: youTubeLoader({
-      type: "playlist",
-      apiKey: import.meta.env.YOUTUBE_API_KEY,
+    loader: cachedPlaylistLoader({
+      apiKey: API_KEY,
       playlistId: playlist.id,
-      maxResults: 50,
-      fetchFullDetails: true,
+      playlistName: playlist.name,
+      maxResults: 1000, // Support large playlists (up to 1000 videos)
+      isComplete: playlist.isComplete || false,
     }),
   });
 });

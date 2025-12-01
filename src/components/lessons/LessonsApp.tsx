@@ -1,4 +1,4 @@
-import { createSignal, createMemo, For, Show, onMount, createEffect } from "solid-js";
+import { createSignal, createMemo, For, Show, onMount, createEffect, batch } from "solid-js";
 import type { PlaylistCategory, Playlist } from "../../lib/lessons";
 import type { TransformedVideo, PlaylistWithVideos } from "../../lib/videoLoader";
 import VideoProgressBadge from "./VideoProgressBadge";
@@ -22,6 +22,29 @@ type ViewMode = "grid" | "list";
 type SortOption = "date" | "views" | "title";
 
 const VIDEOS_PER_PAGE_OPTIONS = [12, 24, 48, 96];
+
+// URL State Management
+function getURLParams(): URLSearchParams {
+  if (typeof window === "undefined") return new URLSearchParams();
+  return new URLSearchParams(window.location.search);
+}
+
+function updateURL(params: Record<string, string | null>) {
+  if (typeof window === "undefined") return;
+  
+  const url = new URL(window.location.href);
+  
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === null || value === "" || value === "all" || (key === "page" && value === "1") || (key === "sort" && value === "date") || (key === "view" && value === "grid")) {
+      url.searchParams.delete(key);
+    } else {
+      url.searchParams.set(key, value);
+    }
+  });
+  
+  // Update URL without reload
+  window.history.replaceState({}, "", url.toString());
+}
 
 // Helper function to parse ISO 8601 duration
 function parseDuration(duration?: string): string {
@@ -59,16 +82,24 @@ function formatDate(dateString: string): string {
 }
 
 export default function LessonsApp(props: LessonsAppProps) {
-  const [searchQuery, setSearchQuery] = createSignal("");
-  const [selectedCategory, setSelectedCategory] = createSignal<PlaylistCategory | "all" | "channel">("all");
-  const [selectedPlaylist, setSelectedPlaylist] = createSignal<string | null>(null);
-  const [viewMode, setViewMode] = createSignal<ViewMode>("grid");
-  const [sortBy, setSortBy] = createSignal<SortOption>("date");
+  // Initialize from URL params
+  const initialParams = getURLParams();
+  
+  const [searchQuery, setSearchQuery] = createSignal(initialParams.get("q") || "");
+  const [selectedCategory, setSelectedCategory] = createSignal<PlaylistCategory | "all" | "channel">(
+    (initialParams.get("category") as PlaylistCategory | "all" | "channel") || "all"
+  );
+  const [selectedPlaylist, setSelectedPlaylist] = createSignal<string | null>(initialParams.get("playlist"));
+  const [viewMode, setViewMode] = createSignal<ViewMode>((initialParams.get("view") as ViewMode) || "grid");
+  const [sortBy, setSortBy] = createSignal<SortOption>((initialParams.get("sort") as SortOption) || "date");
   const [mounted, setMounted] = createSignal(false);
   
   // Pagination state
-  const [currentPage, setCurrentPage] = createSignal(1);
+  const [currentPage, setCurrentPage] = createSignal(parseInt(initialParams.get("page") || "1"));
   const [videosPerPage, setVideosPerPage] = createSignal(24);
+  
+  // Flag to prevent URL update during initial load
+  const [initialized, setInitialized] = createSignal(false);
 
   onMount(() => {
     setMounted(true);
@@ -77,17 +108,35 @@ export default function LessonsApp(props: LessonsAppProps) {
     if (savedPerPage) {
       setVideosPerPage(parseInt(savedPerPage));
     }
+    // Mark as initialized after a tick to allow initial state to settle
+    setTimeout(() => setInitialized(true), 0);
   });
 
-  // Reset to page 1 when filters change
+  // Sync state to URL
+  createEffect(() => {
+    if (!initialized()) return;
+    
+    updateURL({
+      category: selectedCategory(),
+      playlist: selectedPlaylist(),
+      q: searchQuery(),
+      page: currentPage().toString(),
+      sort: sortBy(),
+      view: viewMode(),
+    });
+  });
+
+  // Reset to page 1 when filters change (but not on initial load)
   createEffect(() => {
     // Track these dependencies
     searchQuery();
     selectedCategory();
     selectedPlaylist();
     sortBy();
-    // Reset to page 1
-    setCurrentPage(1);
+    // Only reset if already initialized
+    if (initialized()) {
+      setCurrentPage(1);
+    }
   });
 
   // Navigate to video study page

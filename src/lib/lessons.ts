@@ -5,6 +5,8 @@ export interface Playlist {
   name: string;
   category: PlaylistCategory;
   description?: string;
+  /** If true, the playlist won't be refetched (no new videos expected) */
+  isComplete?: boolean;
 }
 
 /**
@@ -12,13 +14,13 @@ export interface Playlist {
  * PLAYLIST CONFIGURATION
  * ===============================================
  * Add your playlists here. The app will automatically:
- * 1. Create content collections for each playlist
- * 2. Fetch videos from YouTube
- * 3. Display them in the lessons page with proper categorization
+ * 1. Fetch videos from YouTube with caching
+ * 2. Display them in the lessons page with proper categorization
  * 
  * To add a new playlist:
  * 1. Get the playlist ID from YouTube URL (after list=)
  * 2. Add an entry below with id, name, category, and optional description
+ * 3. Set isComplete: true if the playlist won't receive new videos (saves API calls)
  * ===============================================
  */
 export const playlists: Playlist[] = [
@@ -27,6 +29,7 @@ export const playlists: Playlist[] = [
     id: "PLEkQk5xrP-tly7ti7Qb_lS7xjUg_fwlNP",
     name: "شرح كتاب الدولة المكية بالمادة الغيبية",
     category: "تصوف",
+    isComplete: true,
   },
   {
     id: "PLEkQk5xrP-tmsEDdkkXMM1ca2-AquQYad",
