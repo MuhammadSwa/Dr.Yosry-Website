@@ -2,11 +2,11 @@
  * ===============================================
  * CACHED YOUTUBE LOADER FOR ASTRO
  * ===============================================
- * A custom Astro content loader that uses our caching system
+ * A custom Astro content loader that uses caching
  * to avoid hitting YouTube API rate limits during builds.
  * 
- * IMPORTANT: During build, this loader uses cache-only mode
- * to prevent API calls. Run `pnpm cache:warmup` before building!
+ * IMPORTANT: Run `pnpm cache:warmup` before building!
+ * During build, this loader uses cache-only mode.
  * ===============================================
  */
 
@@ -19,8 +19,11 @@ import {
   type YouTubeVideo 
 } from "./youtube-cache";
 
-// Check if we're in build mode (not dev)
-const isBuildMode = process.env.NODE_ENV === 'production' || process.argv.includes('build');
+// Build mode detection - more reliable than checking process.argv
+// During build, we should ALWAYS use cache-only mode
+const isBuildMode = process.env.NODE_ENV === 'production' 
+  || process.argv.some(arg => arg.includes('build'))
+  || !process.env.YOUTUBE_API_KEY; // Also use cache-only if no API key
 
 // Schema for YouTube video data
 export const youtubeVideoSchema = z.object({

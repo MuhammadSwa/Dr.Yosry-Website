@@ -1,6 +1,7 @@
-import { createSignal, createMemo, For, Show, onMount, createEffect, batch } from "solid-js";
+import { createSignal, createMemo, For, Show, onMount, createEffect } from "solid-js";
 import type { PlaylistCategory, Playlist } from "../../lib/lessons";
 import type { TransformedVideo, PlaylistWithVideos } from "../../lib/videoLoader";
+import { createUrlStateManager, revealContent } from "../../lib/useUrlState";
 import VideoProgressBadge from "./VideoProgressBadge";
 
 // Re-export for compatibility
@@ -19,32 +20,9 @@ interface LessonsAppProps {
 }
 
 type ViewMode = "grid" | "list";
-type SortOption = "date" | "views" | "title";
+type SortOption = "date" | "oldest" | "views";
 
 const VIDEOS_PER_PAGE_OPTIONS = [12, 24, 48, 96];
-
-// URL State Management
-function getURLParams(): URLSearchParams {
-  if (typeof window === "undefined") return new URLSearchParams();
-  return new URLSearchParams(window.location.search);
-}
-
-function updateURL(params: Record<string, string | null>) {
-  if (typeof window === "undefined") return;
-  
-  const url = new URL(window.location.href);
-  
-  Object.entries(params).forEach(([key, value]) => {
-    if (value === null || value === "" || value === "all" || (key === "page" && value === "1") || (key === "sort" && value === "date") || (key === "view" && value === "grid")) {
-      url.searchParams.delete(key);
-    } else {
-      url.searchParams.set(key, value);
-    }
-  });
-  
-  // Update URL without reload
-  window.history.replaceState({}, "", url.toString());
-}
 
 // Helper function to parse ISO 8601 duration
 function parseDuration(duration?: string): string {
@@ -82,48 +60,74 @@ function formatDate(dateString: string): string {
 }
 
 export default function LessonsApp(props: LessonsAppProps) {
-  // Initialize from URL params
-  const initialParams = getURLParams();
-  
-  const [searchQuery, setSearchQuery] = createSignal(initialParams.get("q") || "");
-  const [selectedCategory, setSelectedCategory] = createSignal<PlaylistCategory | "all" | "channel">(
-    (initialParams.get("category") as PlaylistCategory | "all" | "channel") || "all"
-  );
-  const [selectedPlaylist, setSelectedPlaylist] = createSignal<string | null>(initialParams.get("playlist"));
-  const [viewMode, setViewMode] = createSignal<ViewMode>((initialParams.get("view") as ViewMode) || "grid");
-  const [sortBy, setSortBy] = createSignal<SortOption>((initialParams.get("sort") as SortOption) || "date");
+  // Create URL state manager with custom skeleton IDs
+  const urlState = createUrlStateManager({
+    skeletonId: "lessons-skeleton",
+    contentId: "lessons-app",
+  });
+
+  // URL-synced state
+  const [searchQuery, setSearchQuery] = urlState.create<string>({
+    key: "q",
+    defaultValue: "",
+  });
+
+  const [selectedCategory, setSelectedCategory] = urlState.create<PlaylistCategory | "all" | "channel">({
+    key: "category",
+    defaultValue: "all",
+    omitValues: ["all"],
+  });
+
+  const [selectedPlaylist, setSelectedPlaylist] = urlState.create<string | null>({
+    key: "playlist",
+    defaultValue: null,
+    parse: (v) => v || null,
+    serialize: (v) => v || "",
+    omitValues: [null, ""],
+  });
+
+  const [viewMode, setViewMode] = urlState.create<ViewMode>({
+    key: "view",
+    defaultValue: "grid",
+    omitValues: ["grid"],
+  });
+
+  const [sortBy, setSortBy] = urlState.create<SortOption>({
+    key: "sort",
+    defaultValue: "date",
+    omitValues: ["date"],
+  });
+
+  const [currentPage, setCurrentPage] = urlState.create<number>({
+    key: "page",
+    defaultValue: 1,
+    parse: (v) => parseInt(v) || 1,
+    serialize: (v) => v.toString(),
+    omitValues: [1],
+  });
+
+  // Non-URL state
   const [mounted, setMounted] = createSignal(false);
-  
-  // Pagination state
-  const [currentPage, setCurrentPage] = createSignal(parseInt(initialParams.get("page") || "1"));
   const [videosPerPage, setVideosPerPage] = createSignal(24);
-  
-  // Flag to prevent URL update during initial load
-  const [initialized, setInitialized] = createSignal(false);
 
   onMount(() => {
-    setMounted(true);
+    // Initialize URL state and reveal content
+    urlState.initializeFromUrl();
+    
     // Restore pagination preference from localStorage
     const savedPerPage = localStorage.getItem("lessons_per_page");
     if (savedPerPage) {
       setVideosPerPage(parseInt(savedPerPage));
     }
-    // Mark as initialized after a tick to allow initial state to settle
-    setTimeout(() => setInitialized(true), 0);
+    
+    setMounted(true);
   });
 
-  // Sync state to URL
+  // Sync state to URL when initialized
   createEffect(() => {
-    if (!initialized()) return;
-    
-    updateURL({
-      category: selectedCategory(),
-      playlist: selectedPlaylist(),
-      q: searchQuery(),
-      page: currentPage().toString(),
-      sort: sortBy(),
-      view: viewMode(),
-    });
+    if (urlState.isInitialized()) {
+      urlState.syncToUrl();
+    }
   });
 
   // Reset to page 1 when filters change (but not on initial load)
@@ -134,7 +138,7 @@ export default function LessonsApp(props: LessonsAppProps) {
     selectedPlaylist();
     sortBy();
     // Only reset if already initialized
-    if (initialized()) {
+    if (urlState.isInitialized()) {
       setCurrentPage(1);
     }
   });
@@ -185,10 +189,10 @@ export default function LessonsApp(props: LessonsAppProps) {
       switch (sortOption) {
         case "date":
           return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        case "oldest":
+          return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
         case "views":
           return (parseInt(b.viewCount || "0")) - (parseInt(a.viewCount || "0"));
-        case "title":
-          return a.title.localeCompare(b.title, "ar");
         default:
           return 0;
       }
@@ -280,7 +284,7 @@ export default function LessonsApp(props: LessonsAppProps) {
 
   return (
     <div class="min-h-screen bg-emerald-950 text-emerald-50">
-      {/* Header Section */}
+      {/* Header Section - Always visible */}
       <header class="bg-gradient-to-b from-emerald-900 to-emerald-950 pt-24 pb-8">
         <div class="container mx-auto px-4">
           {/* Channel Info */}
@@ -502,8 +506,8 @@ export default function LessonsApp(props: LessonsAppProps) {
                   class="bg-emerald-800 border border-emerald-600 rounded-lg px-4 py-2 text-emerald-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
                   <option value="date">الأحدث</option>
+                  <option value="oldest">الأقدم</option>
                   <option value="views">الأكثر مشاهدة</option>
-                  <option value="title">الاسم</option>
                 </select>
 
                 {/* View Mode Toggle */}

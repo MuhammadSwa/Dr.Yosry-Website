@@ -2,18 +2,26 @@
  * ===============================================
  * YOUTUBE DATA CACHE SYSTEM
  * ===============================================
- * Custom YouTube data fetching with local caching.
+ * Simple YouTube data fetching with local JSON caching.
+ * 
+ * Features:
  * - Caches data to JSON files to avoid repeated API calls
  * - Supports marking playlists as "complete" (no new videos expected)
- * - Rate-limited fetching to avoid API timeouts
- * - Thread-safe metadata updates with atomic writes
+ * - Rate-limited fetching with retry logic
+ * 
+ * Usage:
+ * 1. Run `pnpm cache:warmup` before build to populate cache
+ * 2. Build uses cache-only mode (no API calls)
  * ===============================================
  */
 
 import fs from "node:fs";
 import path from "node:path";
 
-// Types
+// ===============================================
+// TYPES
+// ===============================================
+
 export interface YouTubeVideo {
   id: string;
   title: string;
@@ -35,13 +43,17 @@ export interface YouTubeVideo {
   viewCount?: string;
   likeCount?: string;
   commentCount?: string;
+  // Added: playlist context for videos
+  playlistId?: string;
+  playlistName?: string;
+  category?: string;
 }
 
 export interface CachedPlaylist {
   id: string;
   name: string;
   lastFetched: string;
-  isComplete: boolean; // If true, won't refetch
+  isComplete: boolean;
   videoCount: number;
   videos: YouTubeVideo[];
 }
@@ -59,311 +71,144 @@ export interface CacheMetadata {
   };
 }
 
-// Cache configuration
+// ===============================================
+// CONFIGURATION
+// ===============================================
+
 const CACHE_DIR = ".youtube-cache";
 const METADATA_FILE = "metadata.json";
-const LOCK_FILE = "cache.lock";
-const CACHE_TTL_HOURS = 24; // Refetch non-complete playlists after this time
-const FETCH_DELAY_MS = 500; // Delay between API calls to avoid rate limiting
-const MAX_RETRIES = 3; // Maximum retries for API calls
-const LOCK_TIMEOUT_MS = 30000; // Lock timeout in milliseconds
+const CACHE_TTL_HOURS = 24;
+const FETCH_DELAY_MS = 500;
+const MAX_RETRIES = 3;
 
-// In-memory cache for metadata to reduce disk reads
-let metadataCache: CacheMetadata | null = null;
-let metadataCacheTime = 0;
-const METADATA_CACHE_TTL_MS = 5000; // 5 seconds
+// ===============================================
+// CACHE FILE OPERATIONS
+// ===============================================
 
-/**
- * Ensure cache directory exists
- */
+function getCacheDir(): string {
+  return path.join(process.cwd(), CACHE_DIR);
+}
+
 function ensureCacheDir(): string {
-  const cacheDir = path.join(process.cwd(), CACHE_DIR);
+  const cacheDir = getCacheDir();
   if (!fs.existsSync(cacheDir)) {
     fs.mkdirSync(cacheDir, { recursive: true });
   }
   return cacheDir;
 }
 
-/**
- * Acquire a lock for metadata operations
- */
-async function acquireLock(): Promise<boolean> {
-  const cacheDir = ensureCacheDir();
-  const lockPath = path.join(cacheDir, LOCK_FILE);
-  const startTime = Date.now();
-  
-  while (Date.now() - startTime < LOCK_TIMEOUT_MS) {
-    try {
-      // Try to create lock file exclusively
-      const fd = fs.openSync(lockPath, 'wx');
-      fs.writeSync(fd, String(Date.now()));
-      fs.closeSync(fd);
-      return true;
-    } catch (err: any) {
-      if (err.code === 'EEXIST') {
-        // Check if lock is stale
-        try {
-          const lockContent = fs.readFileSync(lockPath, 'utf-8');
-          const lockTime = parseInt(lockContent, 10);
-          if (Date.now() - lockTime > LOCK_TIMEOUT_MS) {
-            // Lock is stale, remove it
-            fs.unlinkSync(lockPath);
-            continue;
-          }
-        } catch {
-          // Lock file corrupted, remove it
-          try { fs.unlinkSync(lockPath); } catch {}
-          continue;
-        }
-        // Wait and retry
-        await delay(50);
-      } else {
-        throw err;
-      }
-    }
-  }
-  return false;
-}
-
-/**
- * Release the lock
- */
-function releaseLock(): void {
-  const cacheDir = path.join(process.cwd(), CACHE_DIR);
-  const lockPath = path.join(cacheDir, LOCK_FILE);
-  try {
-    fs.unlinkSync(lockPath);
-  } catch {}
-}
-
-/**
- * Atomic write to file (write to temp then rename)
- */
-function atomicWriteFile(filePath: string, data: string): void {
-  const tempPath = `${filePath}.tmp.${Date.now()}`;
-  fs.writeFileSync(tempPath, data);
-  fs.renameSync(tempPath, filePath);
-}
-
-/**
- * Get cache metadata with in-memory caching
- */
 function getMetadata(): CacheMetadata {
-  // Check if in-memory cache is still valid
-  if (metadataCache && Date.now() - metadataCacheTime < METADATA_CACHE_TTL_MS) {
-    return metadataCache;
-  }
-  
-  const cacheDir = ensureCacheDir();
-  const metadataPath = path.join(cacheDir, METADATA_FILE);
+  const metadataPath = path.join(getCacheDir(), METADATA_FILE);
   
   if (fs.existsSync(metadataPath)) {
     try {
-      const data = fs.readFileSync(metadataPath, "utf-8");
-      metadataCache = JSON.parse(data);
-      metadataCacheTime = Date.now();
-      return metadataCache!;
+      return JSON.parse(fs.readFileSync(metadataPath, "utf-8"));
     } catch {
-      metadataCache = { lastUpdated: new Date().toISOString(), playlists: {} };
-      metadataCacheTime = Date.now();
-      return metadataCache;
+      // Corrupted metadata, start fresh
     }
   }
   
-  metadataCache = { lastUpdated: new Date().toISOString(), playlists: {} };
-  metadataCacheTime = Date.now();
-  return metadataCache;
+  return { lastUpdated: new Date().toISOString(), playlists: {} };
 }
 
-/**
- * Save cache metadata with locking
- */
-async function saveMetadataAsync(metadata: CacheMetadata): Promise<void> {
-  const locked = await acquireLock();
-  if (!locked) {
-    console.warn('[youtube-cache] Could not acquire lock for metadata update');
-    return;
-  }
-  
-  try {
-    const cacheDir = ensureCacheDir();
-    const metadataPath = path.join(cacheDir, METADATA_FILE);
-    
-    // Re-read metadata to merge with any concurrent changes
-    let currentMetadata: CacheMetadata;
-    if (fs.existsSync(metadataPath)) {
-      try {
-        currentMetadata = JSON.parse(fs.readFileSync(metadataPath, "utf-8"));
-      } catch {
-        currentMetadata = { lastUpdated: new Date().toISOString(), playlists: {} };
-      }
-    } else {
-      currentMetadata = { lastUpdated: new Date().toISOString(), playlists: {} };
-    }
-    
-    // Merge the new data with existing data
-    const mergedMetadata: CacheMetadata = {
-      lastUpdated: new Date().toISOString(),
-      playlists: { ...currentMetadata.playlists, ...metadata.playlists },
-      channel: metadata.channel || currentMetadata.channel,
-    };
-    
-    atomicWriteFile(metadataPath, JSON.stringify(mergedMetadata, null, 2));
-    
-    // Update in-memory cache
-    metadataCache = mergedMetadata;
-    metadataCacheTime = Date.now();
-  } finally {
-    releaseLock();
-  }
-}
-
-/**
- * Sync save metadata (for backwards compatibility)
- */
-function saveMetadata(metadata: CacheMetadata): void {
+function saveMetadata(updates: Partial<CacheMetadata>): void {
   const cacheDir = ensureCacheDir();
   const metadataPath = path.join(cacheDir, METADATA_FILE);
   
-  // Re-read and merge to prevent data loss
-  let currentMetadata: CacheMetadata;
-  if (fs.existsSync(metadataPath)) {
-    try {
-      currentMetadata = JSON.parse(fs.readFileSync(metadataPath, "utf-8"));
-    } catch {
-      currentMetadata = { lastUpdated: new Date().toISOString(), playlists: {} };
-    }
-  } else {
-    currentMetadata = { lastUpdated: new Date().toISOString(), playlists: {} };
-  }
-  
-  const mergedMetadata: CacheMetadata = {
+  const current = getMetadata();
+  const merged: CacheMetadata = {
     lastUpdated: new Date().toISOString(),
-    playlists: { ...currentMetadata.playlists, ...metadata.playlists },
-    channel: metadata.channel || currentMetadata.channel,
+    playlists: { ...current.playlists, ...updates.playlists },
+    channel: updates.channel ?? current.channel,
   };
   
-  atomicWriteFile(metadataPath, JSON.stringify(mergedMetadata, null, 2));
-  
-  // Update in-memory cache
-  metadataCache = mergedMetadata;
-  metadataCacheTime = Date.now();
+  fs.writeFileSync(metadataPath, JSON.stringify(merged, null, 2));
 }
 
-/**
- * Get cached playlist data
- */
 function getCachedPlaylist(playlistId: string): CachedPlaylist | null {
-  const cacheDir = ensureCacheDir();
-  const playlistPath = path.join(cacheDir, `playlist_${playlistId}.json`);
+  const playlistPath = path.join(getCacheDir(), `playlist_${playlistId}.json`);
   
-  if (fs.existsSync(playlistPath)) {
-    try {
+  try {
+    if (fs.existsSync(playlistPath)) {
       return JSON.parse(fs.readFileSync(playlistPath, "utf-8"));
-    } catch {
-      return null;
     }
+  } catch {
+    // Corrupted cache file
   }
-  
   return null;
 }
 
-/**
- * Save playlist to cache using atomic writes
- */
 function savePlaylistCache(playlist: CachedPlaylist): void {
   const cacheDir = ensureCacheDir();
   const playlistPath = path.join(cacheDir, `playlist_${playlist.id}.json`);
-  atomicWriteFile(playlistPath, JSON.stringify(playlist, null, 2));
+  fs.writeFileSync(playlistPath, JSON.stringify(playlist, null, 2));
 }
 
-/**
- * Get cached channel data
- */
 function getCachedChannel(): YouTubeVideo[] | null {
-  const cacheDir = ensureCacheDir();
-  const channelPath = path.join(cacheDir, "channel.json");
+  const channelPath = path.join(getCacheDir(), "channel.json");
   
-  if (fs.existsSync(channelPath)) {
-    try {
+  try {
+    if (fs.existsSync(channelPath)) {
       return JSON.parse(fs.readFileSync(channelPath, "utf-8"));
-    } catch {
-      return null;
     }
+  } catch {
+    // Corrupted cache file
   }
-  
   return null;
 }
 
-/**
- * Save channel videos to cache using atomic writes
- */
 function saveChannelCache(videos: YouTubeVideo[]): void {
   const cacheDir = ensureCacheDir();
   const channelPath = path.join(cacheDir, "channel.json");
-  atomicWriteFile(channelPath, JSON.stringify(videos, null, 2));
+  fs.writeFileSync(channelPath, JSON.stringify(videos, null, 2));
 }
 
-/**
- * Check if cache is stale
- */
 function isCacheStale(lastFetched: string, isComplete: boolean): boolean {
-  if (isComplete) return false; // Complete playlists never go stale
+  if (isComplete) return false;
   
-  const lastFetchedDate = new Date(lastFetched);
-  const now = new Date();
-  const hoursSinceUpdate = (now.getTime() - lastFetchedDate.getTime()) / (1000 * 60 * 60);
-  
+  const hoursSinceUpdate = (Date.now() - new Date(lastFetched).getTime()) / (1000 * 60 * 60);
   return hoursSinceUpdate > CACHE_TTL_HOURS;
 }
 
-/**
- * Delay helper
- */
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/**
- * Fetch with retry logic
- */
-async function fetchWithRetry(
-  url: string,
-  retries: number = MAX_RETRIES
-): Promise<Response> {
+// ===============================================
+// API HELPERS
+// ===============================================
+
+async function fetchWithRetry(url: string): Promise<Response> {
   let lastError: Error | null = null;
   
-  for (let i = 0; i < retries; i++) {
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
       const response = await fetch(url);
       
-      // Handle rate limiting
       if (response.status === 429) {
         const retryAfter = response.headers.get('Retry-After');
-        const waitTime = retryAfter ? parseInt(retryAfter, 10) * 1000 : (2 ** i) * 1000;
+        const waitTime = retryAfter ? parseInt(retryAfter, 10) * 1000 : (2 ** attempt) * 1000;
         console.warn(`[youtube-cache] Rate limited, waiting ${waitTime}ms...`);
         await delay(waitTime);
         continue;
       }
       
-      // Handle other errors
       if (!response.ok) {
-        const errorBody = await response.text();
-        throw new Error(`YouTube API error: ${response.status} ${response.statusText} - ${errorBody}`);
+        throw new Error(`YouTube API error: ${response.status} ${response.statusText}`);
       }
       
       return response;
     } catch (error) {
       lastError = error as Error;
-      if (i < retries - 1) {
-        const waitTime = (2 ** i) * 1000;
-        console.warn(`[youtube-cache] Request failed, retrying in ${waitTime}ms... (${error})`);
+      if (attempt < MAX_RETRIES - 1) {
+        const waitTime = (2 ** attempt) * 1000;
+        console.warn(`[youtube-cache] Retry ${attempt + 1}/${MAX_RETRIES} in ${waitTime}ms...`);
         await delay(waitTime);
       }
     }
   }
   
-  throw lastError || new Error('Failed after all retries');
+  throw lastError ?? new Error('Failed after all retries');
 }
 
 /**
@@ -688,11 +533,9 @@ export function markPlaylistComplete(playlistId: string, isComplete: boolean = t
  * Clear all cache
  */
 export function clearCache(): void {
-  const cacheDir = path.join(process.cwd(), CACHE_DIR);
+  const cacheDir = getCacheDir();
   if (fs.existsSync(cacheDir)) {
     fs.rmSync(cacheDir, { recursive: true });
-    metadataCache = null;
-    metadataCacheTime = 0;
     console.log(`[youtube-cache] Cache cleared`);
   }
 }
@@ -708,12 +551,12 @@ export function getCacheStats(): {
   playlists: Record<string, { videoCount: number; isComplete: boolean; lastFetched: string }>;
 } {
   const metadata = getMetadata();
-  const playlists = Object.values(metadata.playlists);
+  const playlistsList = Object.values(metadata.playlists);
   
   return {
-    totalPlaylists: playlists.length,
-    completePlaylists: playlists.filter(p => p.isComplete).length,
-    totalVideos: playlists.reduce((sum, p) => sum + p.videoCount, 0) + (metadata.channel?.videoCount || 0),
+    totalPlaylists: playlistsList.length,
+    completePlaylists: playlistsList.filter(p => p.isComplete).length,
+    totalVideos: playlistsList.reduce((sum, p) => sum + p.videoCount, 0) + (metadata.channel?.videoCount || 0),
     lastUpdated: metadata.lastUpdated,
     playlists: metadata.playlists,
   };
@@ -723,8 +566,7 @@ export function getCacheStats(): {
  * Check if cache exists and is valid
  */
 export function isCacheReady(): boolean {
-  const cacheDir = path.join(process.cwd(), CACHE_DIR);
-  const metadataPath = path.join(cacheDir, METADATA_FILE);
+  const metadataPath = path.join(getCacheDir(), METADATA_FILE);
   
   if (!fs.existsSync(metadataPath)) {
     return false;
@@ -747,7 +589,7 @@ export function validateCache(): {
   errors: string[];
 } {
   const metadata = getMetadata();
-  const cacheDir = ensureCacheDir();
+  const cacheDir = getCacheDir();
   const missingPlaylists: string[] = [];
   const errors: string[] = [];
   

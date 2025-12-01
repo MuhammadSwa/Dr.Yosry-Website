@@ -1,0 +1,78 @@
+---
+/**
+ * UrlStateWrapper - Astro component for URL state management
+ * 
+ * Wraps your SolidJS component with a skeleton that shows while URL state loads.
+ * This prevents flash of wrong content when reloading a page with URL parameters.
+ * 
+ * Usage:
+ * ```astro
+ * ---
+ * import UrlStateWrapper from "../components/UrlStateWrapper.astro";
+ * import MyApp from "../components/MyApp";
+ * ---
+ * 
+ * <UrlStateWrapper>
+ *   <div slot="skeleton">
+ *     <!-- Your loading skeleton HTML -->
+ *   </div>
+ *   <MyApp client:load {...props} />
+ * </UrlStateWrapper>
+ * ```
+ * 
+ * In your SolidJS component:
+ * ```tsx
+ * import { createUrlStateManager, revealContent } from "../lib/useUrlState";
+ * 
+ * const urlState = createUrlStateManager();
+ * const [category, setCategory] = urlState.create({ key: "category", defaultValue: "all" });
+ * 
+ * onMount(() => {
+ *   urlState.initializeFromUrl(); // This reveals content automatically
+ * });
+ * 
+ * createEffect(() => {
+ *   if (urlState.isInitialized()) {
+ *     urlState.syncToUrl();
+ *   }
+ * });
+ * ```
+ */
+
+export interface Props {
+  /** Custom ID for the skeleton container */
+  skeletonId?: string;
+  /** Custom ID for the content container */
+  contentId?: string;
+  /** Class to apply to wrapper divs */
+  class?: string;
+}
+
+const { 
+  skeletonId = "url-state-skeleton", 
+  contentId = "url-state-content",
+  class: className = ""
+} = Astro.props;
+---
+
+<!-- Skeleton - hidden by default, shown via inline script if URL has params -->
+<div id={skeletonId} class={className} style="display: none;">
+  <slot name="skeleton" />
+</div>
+
+<!-- Main content - visible by default, hidden via inline script if URL has params -->
+<div id={contentId} class={className}>
+  <slot />
+</div>
+
+<!-- Inline script runs immediately before any framework JS -->
+<script is:inline define:vars={{ skeletonId, contentId }}>
+(function() {
+  if (window.location.search.length > 0) {
+    var skeleton = document.getElementById(skeletonId);
+    var content = document.getElementById(contentId);
+    if (skeleton) skeleton.style.display = 'block';
+    if (content) content.style.display = 'none';
+  }
+})();
+</script>

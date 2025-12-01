@@ -24,9 +24,10 @@ import {
 } from "../src/lib/youtube-cache.ts";
 import { playlists, channelInfo } from "../src/lib/lessons.ts";
 
-const API_KEY = process.env.YOUTUBE_API_KEY;
+// ===============================================
+// CONFIGURATION & HELPERS
+// ===============================================
 
-// Colors for terminal output
 const colors = {
   reset: "\x1b[0m",
   bright: "\x1b[1m",
@@ -41,11 +42,36 @@ function log(message: string, color: keyof typeof colors = "reset") {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
-async function warmupCache(forceRefresh: boolean = false) {
-  if (!API_KEY) {
-    log("❌ YOUTUBE_API_KEY environment variable is required", "red");
+function getApiKey(): string {
+  const key = process.env.YOUTUBE_API_KEY;
+  
+  if (!key) {
+    log("\n❌ YOUTUBE_API_KEY environment variable is required", "red");
+    log("\nTo set the API key, run:", "yellow");
+    log("  export YOUTUBE_API_KEY='your_api_key_here'", "cyan");
+    log("\nOr create a .env file with:", "yellow");
+    log("  YOUTUBE_API_KEY=your_api_key_here\n", "cyan");
     process.exit(1);
   }
+  
+  // Basic validation - API keys are typically 39 characters
+  if (key.length < 30) {
+    log("\n⚠️  Warning: YOUTUBE_API_KEY seems too short. Make sure it's valid.\n", "yellow");
+  }
+  
+  return key;
+}
+
+// ===============================================
+// CACHE WARMUP
+// ===============================================
+
+// ===============================================
+// CACHE WARMUP
+// ===============================================
+
+async function warmupCache(forceRefresh: boolean = false) {
+  const apiKey = getApiKey();
   
   log("\n🔄 Warming up YouTube cache...\n", "cyan");
   log(`📊 Total playlists to process: ${playlists.length}`, "blue");
@@ -59,7 +85,7 @@ async function warmupCache(forceRefresh: boolean = false) {
   // Refresh channel first
   log("📺 Fetching channel videos...", "blue");
   try {
-    const channelVideos = await loadChannelWithCache(API_KEY, channelInfo.id, { 
+    const channelVideos = await loadChannelWithCache(apiKey, channelInfo.id, { 
       forceRefresh,
       maxResults: 100,
     });
@@ -82,7 +108,7 @@ async function warmupCache(forceRefresh: boolean = false) {
     log(`   Category: ${playlist.category} | ID: ${playlist.id}`, "cyan");
     
     try {
-      const videos = await loadPlaylistWithCache(API_KEY, playlist.id, playlist.name, {
+      const videos = await loadPlaylistWithCache(apiKey, playlist.id, playlist.name, {
         forceRefresh,
         isComplete: playlist.isComplete,
         maxResults: 1000, // Fetch all videos

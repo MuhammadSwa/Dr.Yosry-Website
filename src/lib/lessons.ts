@@ -323,10 +323,10 @@ export const channelInfo = {
 
 /**
  * Helper function to generate collection name from playlist ID
- * Uses the last 4 characters of the playlist ID for uniqueness
+ * Uses the full playlist ID for uniqueness and reliability
  */
 export function getCollectionName(playlistId: string): string {
-  return `playlist_${playlistId.slice(-4)}`;
+  return `playlist_${playlistId}`;
 }
 
 /**
