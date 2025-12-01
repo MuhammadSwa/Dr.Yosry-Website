@@ -1,4 +1,8 @@
 import { createSignal, createEffect, createMemo, onMount, For, Show } from "solid-js";
+import { 
+  loadVideoStudyDataAsync, 
+  saveVideoStudyDataAsync,
+} from "../../lib/studyStore";
 
 // Extend Window interface for YouTube player
 interface YouTubeWindow extends Window {
@@ -64,9 +68,6 @@ interface VideoStudyProps {
   videoId: string;
 }
 
-// Storage key prefix
-const STORAGE_KEY_PREFIX = "video_study_";
-
 // Generate unique ID
 function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -76,40 +77,6 @@ function generateId(): string {
 function formatTimestamp(timestamp: string): string {
   if (!timestamp) return "00:00";
   return timestamp;
-}
-
-// Get storage key for a video
-function getStorageKey(videoId: string): string {
-  return `${STORAGE_KEY_PREFIX}${videoId}`;
-}
-
-// Load study data from localStorage
-function loadStudyData(videoId: string): VideoStudyData {
-  if (typeof window === "undefined") {
-    return getDefaultStudyData(videoId);
-  }
-  
-  try {
-    const stored = localStorage.getItem(getStorageKey(videoId));
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch (e) {
-    console.error("Error loading study data:", e);
-  }
-  
-  return getDefaultStudyData(videoId);
-}
-
-// Save study data to localStorage
-function saveStudyData(videoId: string, data: VideoStudyData): void {
-  if (typeof window === "undefined") return;
-  
-  try {
-    localStorage.setItem(getStorageKey(videoId), JSON.stringify(data));
-  } catch (e) {
-    console.error("Error saving study data:", e);
-  }
 }
 
 // Get default study data
@@ -133,6 +100,7 @@ export default function VideoStudy(props: VideoStudyProps) {
   const [bookmarks, setBookmarks] = createSignal<Bookmark[]>([]);
   const [progress, setProgress] = createSignal<StudyProgress>(getDefaultStudyData(props.video.id).progress);
   const [playerReady, setPlayerReady] = createSignal(false);
+  const [dataLoaded, setDataLoaded] = createSignal(false);
   
   // Note form
   const [newNoteContent, setNewNoteContent] = createSignal("");
@@ -224,11 +192,20 @@ export default function VideoStudy(props: VideoStudyProps) {
   };
   
   // Load data on mount
-  onMount(() => {
-    const data = loadStudyData(props.video.id);
-    setNotes(data.notes);
+  onMount(async () => {
+    // Load data from IndexedDB
+    const data = await loadVideoStudyDataAsync(props.video.id);
+    setNotes(data.notes.map(n => ({
+      id: n.id,
+      timestamp: n.timestamp,
+      content: n.content,
+      createdAt: n.createdAt,
+      importance: n.importance as NoteImportance,
+      tags: n.tags,
+    })));
     setBookmarks(data.bookmarks);
     setProgress(data.progress);
+    setDataLoaded(true);
     
     // Update last watched
     const updatedProgress = {
@@ -236,7 +213,6 @@ export default function VideoStudy(props: VideoStudyProps) {
       lastWatched: new Date().toISOString(),
     };
     setProgress(updatedProgress);
-    saveAllData();
 
     // Listen for YouTube player ready event
     const handlePlayerReady = () => {
@@ -304,10 +280,12 @@ export default function VideoStudy(props: VideoStudyProps) {
   });
   
   // Save all data helper
-  const saveAllData = () => {
-    saveStudyData(props.video.id, {
-      notes: notes(),
-      bookmarks: bookmarks(),
+  const saveAllData = async () => {
+    if (!dataLoaded()) return;
+    
+    await saveVideoStudyDataAsync(props.video.id, {
+      notes: notes().map(n => ({ ...n, videoId: props.video.id })),
+      bookmarks: bookmarks().map(b => ({ ...b, videoId: props.video.id })),
       progress: progress(),
     });
   };
@@ -318,7 +296,10 @@ export default function VideoStudy(props: VideoStudyProps) {
     notes();
     bookmarks();
     progress();
-    saveAllData();
+    
+    if (dataLoaded()) {
+      saveAllData();
+    }
   });
   
   // Add a new note

@@ -1,4 +1,5 @@
 import { createSignal, createMemo, For, Show, onMount } from "solid-js";
+import { getAllNotesAsync } from "../../lib/studyStore";
 
 interface Note {
   id: string;
@@ -31,34 +32,33 @@ export default function NotesSearch(props: NotesSearchProps) {
   const [filterImportance, setFilterImportance] = createSignal<string>("all");
   const [filterTag, setFilterTag] = createSignal<string>("all");
   
-  // Load all notes from localStorage
-  const loadAllNotes = () => {
+  // Load all notes from IndexedDB
+  const loadAllNotes = async () => {
     if (typeof window === "undefined") return;
     
     const notes: VideoNote[] = [];
     const videoTitleMap = new Map(props.videos.map(v => [v.id, v.title]));
     
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith("video_study_")) {
-        try {
-          const videoId = key.replace("video_study_", "");
-          const data = JSON.parse(localStorage.getItem(key) || "{}");
-          const videoTitle = videoTitleMap.get(videoId) || "فيديو غير معروف";
-          
-          if (data.notes && Array.isArray(data.notes)) {
-            data.notes.forEach((note: Note) => {
-              notes.push({
-                videoId,
-                videoTitle,
-                note,
-              });
-            });
-          }
-        } catch (e) {
-          console.error("Error loading notes from", key, e);
-        }
-      }
+    try {
+      const allDbNotes = await getAllNotesAsync();
+      
+      allDbNotes.forEach((note) => {
+        const videoTitle = videoTitleMap.get(note.videoId) || "فيديو غير معروف";
+        notes.push({
+          videoId: note.videoId,
+          videoTitle,
+          note: {
+            id: note.id,
+            timestamp: note.timestamp,
+            content: note.content,
+            createdAt: note.createdAt,
+            importance: note.importance as "high" | "medium" | "low" | "none",
+            tags: note.tags,
+          },
+        });
+      });
+    } catch (e) {
+      console.error("Error loading notes from IndexedDB", e);
     }
     
     // Sort by creation date (newest first)

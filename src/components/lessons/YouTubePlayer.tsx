@@ -1,4 +1,5 @@
 import { onMount, onCleanup } from "solid-js";
+import { getVideoPositionAsync, saveVideoPositionAsync } from "../../lib/studyStore";
 
 // Extend Window interface for YouTube player
 interface YouTubeWindow extends Window {
@@ -12,30 +13,6 @@ interface YouTubeWindow extends Window {
 
 // Check if we're in the browser
 const isBrowser = typeof window !== "undefined";
-
-// Storage key for video position
-const POSITION_STORAGE_KEY = "video_position_";
-
-// Get saved position for a video
-function getSavedPosition(videoId: string): number {
-  if (!isBrowser) return 0;
-  try {
-    const saved = localStorage.getItem(POSITION_STORAGE_KEY + videoId);
-    return saved ? parseFloat(saved) : 0;
-  } catch {
-    return 0;
-  }
-}
-
-// Save position for a video
-function savePosition(videoId: string, position: number): void {
-  if (!isBrowser) return;
-  try {
-    localStorage.setItem(POSITION_STORAGE_KEY + videoId, position.toString());
-  } catch {
-    // Ignore storage errors
-  }
-}
 
 interface YouTubePlayerProps {
   videoId: string;
@@ -96,7 +73,7 @@ export default function YouTubePlayer(props: YouTubePlayerProps) {
   let progressInterval: ReturnType<typeof setInterval> | null = null;
   let savedStartPosition = 0;
 
-  const initializePlayer = () => {
+  const initializePlayer = async () => {
     if (!isBrowser) return;
     const win = window as YouTubeWindow;
     
@@ -106,8 +83,8 @@ export default function YouTubePlayer(props: YouTubePlayerProps) {
       return;
     }
 
-    // Get saved position before creating player
-    savedStartPosition = getSavedPosition(props.videoId);
+    // Get saved position before creating player (from IndexedDB)
+    savedStartPosition = await getVideoPositionAsync(props.videoId);
 
     player = new win.YT.Player(playerContainer, {
       videoId: props.videoId,
@@ -129,14 +106,14 @@ export default function YouTubePlayer(props: YouTubePlayerProps) {
           }
           
           // Start tracking progress every 5 seconds
-          progressInterval = setInterval(() => {
+          progressInterval = setInterval(async () => {
             if (player && typeof player.getCurrentTime === "function" && typeof player.getPlayerState === "function") {
               const state = player.getPlayerState();
               // Only save if playing (1) or paused (2)
               if (state === 1 || state === 2) {
                 const currentTime = player.getCurrentTime();
                 if (currentTime > 0) {
-                  savePosition(props.videoId, currentTime);
+                  await saveVideoPositionAsync(props.videoId, currentTime);
                   // Dispatch progress update event
                   window.dispatchEvent(new CustomEvent("youtubeProgressUpdate", {
                     detail: win.getYouTubeProgress ? win.getYouTubeProgress() : { currentTime: 0, duration: 0, percentage: 0 }
@@ -146,12 +123,12 @@ export default function YouTubePlayer(props: YouTubePlayerProps) {
             }
           }, 5000);
         },
-        onStateChange: (event: any) => {
+        onStateChange: async (event: any) => {
           // Save position when paused or ended
           if (event.data === 2 || event.data === 0) { // 2 = paused, 0 = ended
             if (player && typeof player.getCurrentTime === "function") {
               const currentTime = player.getCurrentTime();
-              savePosition(props.videoId, currentTime);
+              await saveVideoPositionAsync(props.videoId, currentTime);
               // Dispatch progress update
               window.dispatchEvent(new CustomEvent("youtubeProgressUpdate", {
                 detail: win.getYouTubeProgress ? win.getYouTubeProgress() : { currentTime: 0, duration: 0, percentage: 0 }
@@ -198,11 +175,11 @@ export default function YouTubePlayer(props: YouTubePlayerProps) {
     if (!isBrowser) return;
     const win = window as YouTubeWindow;
     
-    // Save final position before cleanup
+    // Save final position before cleanup (fire and forget)
     if (player && typeof player.getCurrentTime === "function") {
       const currentTime = player.getCurrentTime();
       if (currentTime > 0) {
-        savePosition(props.videoId, currentTime);
+        saveVideoPositionAsync(props.videoId, currentTime);
       }
     }
     

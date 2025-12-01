@@ -1,23 +1,20 @@
 import { createSignal, createMemo, onMount, For, Show } from "solid-js";
 import {
-  calculateGlobalStats,
-  getFavorites,
-  getWatchLater,
-  getRecentlyWatched,
-  getRecentSessions,
-  loadGlobalData,
-  removeFromFavorites,
-  removeFromWatchLater,
-  downloadExportFile,
-  importAllData,
-  loadVideoStudyData,
+  calculateGlobalStatsAsync,
+  getFavoritesAsync,
+  getWatchLaterAsync,
+  getRecentlyWatchedAsync,
+  getRecentSessionsAsync,
+  removeFromFavoritesAsync,
+  removeFromWatchLaterAsync,
+  exportAllDataAsync,
+  importAllDataAsync,
   formatDuration,
   formatRelativeTime,
   type GlobalStats,
-  type FavoriteVideo,
-  type WatchLaterItem,
-  type StudySession,
-  type ExportData,
+  type Favorite,
+  type WatchLater,
+  type Session,
 } from "../../lib/studyStore";
 
 interface VideoInfo {
@@ -50,10 +47,10 @@ function parseDuration(duration?: string): string {
 
 export default function StudyDashboard(props: DashboardProps) {
   const [stats, setStats] = createSignal<GlobalStats | null>(null);
-  const [favorites, setFavorites] = createSignal<FavoriteVideo[]>([]);
-  const [watchLater, setWatchLater] = createSignal<WatchLaterItem[]>([]);
+  const [favorites, setFavorites] = createSignal<Favorite[]>([]);
+  const [watchLater, setWatchLater] = createSignal<WatchLater[]>([]);
   const [recentlyWatched, setRecentlyWatched] = createSignal<{ videoId: string; lastWatched: string; percentage: number }[]>([]);
-  const [recentSessions, setRecentSessions] = createSignal<StudySession[]>([]);
+  const [recentSessions, setRecentSessions] = createSignal<Session[]>([]);
   const [activeTab, setActiveTab] = createSignal<"overview" | "favorites" | "watchlater" | "history" | "settings">("overview");
   const [isLoaded, setIsLoaded] = createSignal(false);
 
@@ -72,34 +69,50 @@ export default function StudyDashboard(props: DashboardProps) {
   };
 
   // Refresh data
-  const refreshData = () => {
-    setStats(calculateGlobalStats());
-    setFavorites(getFavorites());
-    setWatchLater(getWatchLater());
-    setRecentlyWatched(getRecentlyWatched(10));
-    setRecentSessions(getRecentSessions(10));
+  const refreshData = async () => {
+    setStats(await calculateGlobalStatsAsync());
+    setFavorites(await getFavoritesAsync());
+    setWatchLater(await getWatchLaterAsync());
+    setRecentlyWatched(await getRecentlyWatchedAsync(10));
+    setRecentSessions(await getRecentSessionsAsync(10));
   };
 
-  onMount(() => {
-    refreshData();
+  onMount(async () => {
+    await refreshData();
     setIsLoaded(true);
   });
 
   // Handle remove from favorites
-  const handleRemoveFavorite = (videoId: string) => {
-    removeFromFavorites(videoId);
-    refreshData();
+  const handleRemoveFavorite = async (videoId: string) => {
+    await removeFromFavoritesAsync(videoId);
+    await refreshData();
   };
 
   // Handle remove from watch later
-  const handleRemoveWatchLater = (videoId: string) => {
-    removeFromWatchLater(videoId);
-    refreshData();
+  const handleRemoveWatchLater = async (videoId: string) => {
+    await removeFromWatchLaterAsync(videoId);
+    await refreshData();
   };
 
   // Handle export
-  const handleExport = () => {
-    downloadExportFile();
+  const handleExport = async () => {
+    try {
+      const data = await exportAllDataAsync();
+      const jsonString = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `study-backup-${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export error:", err);
+      alert("خطأ في تصدير البيانات");
+    }
   };
 
   // Handle import
@@ -112,11 +125,10 @@ export default function StudyDashboard(props: DashboardProps) {
       if (file) {
         try {
           const text = await file.text();
-          const data: ExportData = JSON.parse(text);
-          if (importAllData(data)) {
-            refreshData();
-            alert("تم استيراد البيانات بنجاح!");
-          }
+          const data = JSON.parse(text);
+          await importAllDataAsync(data, true);
+          await refreshData();
+          alert("تم استيراد البيانات بنجاح!");
         } catch (err) {
           alert("خطأ في استيراد الملف");
         }
@@ -364,7 +376,7 @@ export default function StudyDashboard(props: DashboardProps) {
                           <a href={`/lessons/${fav.videoId}`}>
                             <img
                               src={fav.thumbnail || video?.thumbnail}
-                              alt={fav.title}
+                              alt={fav.videoTitle}
                               class="w-full aspect-video object-cover"
                             />
                           </a>
@@ -373,7 +385,7 @@ export default function StudyDashboard(props: DashboardProps) {
                               href={`/lessons/${fav.videoId}`}
                               class="font-medium text-emerald-100 hover:text-amber-400 line-clamp-2 text-sm"
                             >
-                              {fav.title || video?.title}
+                              {fav.videoTitle || video?.title}
                             </a>
                             <div class="flex items-center justify-between mt-2">
                               <span class="text-xs text-emerald-500">
@@ -427,13 +439,14 @@ export default function StudyDashboard(props: DashboardProps) {
                         medium: "متوسط",
                         low: "منخفض",
                       };
+                      const priority = (item.priority || "medium") as "high" | "medium" | "low";
                       return (
-                        <div class={`flex gap-4 p-4 rounded-xl border ${priorityColors[item.priority]}`}>
+                        <div class={`flex gap-4 p-4 rounded-xl border ${priorityColors[priority]}`}>
                           <span class="text-emerald-500 font-mono text-lg shrink-0">{index() + 1}</span>
                           <a href={`/lessons/${item.videoId}`} class="shrink-0">
                             <img
                               src={item.thumbnail || video?.thumbnail}
-                              alt={item.title}
+                              alt={item.videoTitle}
                               class="w-32 aspect-video object-cover rounded-lg"
                             />
                           </a>
@@ -442,15 +455,15 @@ export default function StudyDashboard(props: DashboardProps) {
                               href={`/lessons/${item.videoId}`}
                               class="font-medium text-emerald-100 hover:text-amber-400 line-clamp-2"
                             >
-                              {item.title || video?.title}
+                              {item.videoTitle || video?.title}
                             </a>
                             <div class="flex items-center gap-3 mt-2 text-sm">
                               <span class={`px-2 py-0.5 rounded text-xs ${
-                                item.priority === "high" ? "bg-red-500/20 text-red-300" :
-                                item.priority === "medium" ? "bg-amber-500/20 text-amber-300" :
+                                priority === "high" ? "bg-red-500/20 text-red-300" :
+                                priority === "medium" ? "bg-amber-500/20 text-amber-300" :
                                 "bg-emerald-500/20 text-emerald-300"
                               }`}>
-                                {priorityLabels[item.priority]}
+                                {priorityLabels[priority]}
                               </span>
                               <span class="text-emerald-500">
                                 أضيف {formatRelativeTime(item.addedAt)}

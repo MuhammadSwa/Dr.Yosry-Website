@@ -1,13 +1,13 @@
 import { createSignal, onMount, Show } from "solid-js";
 import {
-  isFavorite,
-  addToFavorites,
-  removeFromFavorites,
-  isInWatchLater,
-  addToWatchLater,
-  removeFromWatchLater,
-  updateStudyStreak,
-  startStudySession,
+  isFavoriteAsync,
+  addToFavoritesAsync,
+  removeFromFavoritesAsync,
+  isInWatchLaterAsync,
+  addToWatchLaterAsync,
+  removeFromWatchLaterAsync,
+  updateStudyStreakAsync,
+  startStudySessionAsync,
 } from "../../lib/studyStore";
 
 interface VideoActionsProps {
@@ -26,47 +26,47 @@ export default function VideoActions(props: VideoActionsProps) {
   const [showShareMenu, setShowShareMenu] = createSignal(false);
   const [copied, setCopied] = createSignal(false);
 
-  onMount(() => {
+  onMount(async () => {
     if (isBrowser) {
-      setIsFav(isFavorite(props.videoId));
-      setIsWatchLater(isInWatchLater(props.videoId));
+      setIsFav(await isFavoriteAsync(props.videoId));
+      setIsWatchLater(await isInWatchLaterAsync(props.videoId));
       
       // Update study streak when visiting a video
-      updateStudyStreak();
+      await updateStudyStreakAsync();
       
       // Start a study session
-      startStudySession(props.videoId, props.videoTitle);
+      await startStudySessionAsync(props.videoId, props.videoTitle);
     }
   });
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
     if (isFav()) {
-      removeFromFavorites(props.videoId);
+      await removeFromFavoritesAsync(props.videoId);
       setIsFav(false);
     } else {
-      addToFavorites({
-        id: props.videoId,
-        title: props.videoTitle,
+      await addToFavoritesAsync({
+        videoId: props.videoId,
+        videoTitle: props.videoTitle,
         thumbnail: props.thumbnail,
       });
       setIsFav(true);
     }
   };
 
-  const toggleWatchLater = () => {
+  const toggleWatchLater = async () => {
     if (isWatchLater()) {
-      removeFromWatchLater(props.videoId);
+      await removeFromWatchLaterAsync(props.videoId);
       setIsWatchLater(false);
     } else {
       setShowPriorityMenu(true);
     }
   };
 
-  const addToWatchLaterWithPriority = (priority: "low" | "medium" | "high") => {
-    addToWatchLater(
+  const addToWatchLaterWithPriority = async (priority: "low" | "medium" | "high") => {
+    await addToWatchLaterAsync(
       {
-        id: props.videoId,
-        title: props.videoTitle,
+        videoId: props.videoId,
+        videoTitle: props.videoTitle,
         thumbnail: props.thumbnail,
       },
       priority

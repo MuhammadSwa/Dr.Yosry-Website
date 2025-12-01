@@ -1,4 +1,5 @@
 import { createSignal, createMemo, For, Show, onMount } from "solid-js";
+import { getAllNotesAsync, getAllBookmarksAsync } from "../../lib/studyStore";
 
 // Types
 interface Note {
@@ -81,64 +82,60 @@ export default function NotesBookmarksBrowser(props: NotesBookmarksBrowserProps)
     return map;
   });
   
-  // Load all notes and bookmarks from localStorage
-  const loadAllItems = () => {
+  // Load all notes and bookmarks from IndexedDB
+  const loadAllItems = async () => {
     if (typeof window === "undefined") return;
     
     const items: StudyItem[] = [];
     
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith("video_study_")) {
-        try {
-          const videoId = key.replace("video_study_", "");
-          const data = JSON.parse(localStorage.getItem(key) || "{}");
-          const videoInfo = videoInfoMap().get(videoId);
-          const videoTitle = videoInfo?.title || "فيديو غير معروف";
-          const playlistId = videoInfo?.playlistId;
-          const playlistInfo = playlistId ? playlistInfoMap().get(playlistId) : undefined;
-          
-          // Load notes
-          if (data.notes && Array.isArray(data.notes)) {
-            data.notes.forEach((note: Note) => {
-              items.push({
-                type: "note",
-                videoId,
-                videoTitle,
-                playlistId,
-                playlistName: playlistInfo?.name,
-                category: playlistInfo?.category || videoInfo?.category,
-                timestamp: note.timestamp,
-                content: note.content,
-                createdAt: note.createdAt,
-                importance: note.importance,
-                tags: note.tags,
-                id: note.id,
-              });
-            });
-          }
-          
-          // Load bookmarks
-          if (data.bookmarks && Array.isArray(data.bookmarks)) {
-            data.bookmarks.forEach((bookmark: Bookmark) => {
-              items.push({
-                type: "bookmark",
-                videoId,
-                videoTitle,
-                playlistId,
-                playlistName: playlistInfo?.name,
-                category: playlistInfo?.category || videoInfo?.category,
-                timestamp: bookmark.timestamp,
-                content: bookmark.label,
-                createdAt: bookmark.createdAt,
-                id: bookmark.id,
-              });
-            });
-          }
-        } catch (e) {
-          console.error("Error loading data from", key, e);
-        }
-      }
+    try {
+      // Load all notes from IndexedDB
+      const notes = await getAllNotesAsync();
+      notes.forEach((note) => {
+        const videoInfo = videoInfoMap().get(note.videoId);
+        const videoTitle = videoInfo?.title || "فيديو غير معروف";
+        const playlistId = videoInfo?.playlistId;
+        const playlistInfo = playlistId ? playlistInfoMap().get(playlistId) : undefined;
+        
+        items.push({
+          type: "note",
+          videoId: note.videoId,
+          videoTitle,
+          playlistId,
+          playlistName: playlistInfo?.name,
+          category: playlistInfo?.category || videoInfo?.category,
+          timestamp: note.timestamp,
+          content: note.content,
+          createdAt: note.createdAt,
+          importance: note.importance as "high" | "medium" | "low" | "none",
+          tags: note.tags,
+          id: note.id,
+        });
+      });
+      
+      // Load all bookmarks from IndexedDB
+      const bookmarks = await getAllBookmarksAsync();
+      bookmarks.forEach((bookmark) => {
+        const videoInfo = videoInfoMap().get(bookmark.videoId);
+        const videoTitle = videoInfo?.title || "فيديو غير معروف";
+        const playlistId = videoInfo?.playlistId;
+        const playlistInfo = playlistId ? playlistInfoMap().get(playlistId) : undefined;
+        
+        items.push({
+          type: "bookmark",
+          videoId: bookmark.videoId,
+          videoTitle,
+          playlistId,
+          playlistName: playlistInfo?.name,
+          category: playlistInfo?.category || videoInfo?.category,
+          timestamp: bookmark.timestamp,
+          content: bookmark.label,
+          createdAt: bookmark.createdAt,
+          id: bookmark.id,
+        });
+      });
+    } catch (e) {
+      console.error("Error loading data from IndexedDB", e);
     }
     
     setAllItems(items);

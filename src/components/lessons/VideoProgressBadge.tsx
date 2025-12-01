@@ -1,5 +1,5 @@
 import { createSignal, onMount, Show } from "solid-js";
-import { loadVideoStudyData, isFavorite, isInWatchLater } from "../../lib/studyStore";
+import { loadVideoStudyDataAsync, isFavoriteAsync, isInWatchLaterAsync } from "../../lib/studyStore";
 
 interface VideoProgressBadgeProps {
   videoId: string;
@@ -22,14 +22,14 @@ export default function VideoProgressBadge(props: VideoProgressBadgeProps) {
   const [isFav, setIsFav] = createSignal(false);
   const [isQueued, setIsQueued] = createSignal(false);
 
-  onMount(() => {
+  onMount(async () => {
     if (isBrowser) {
-      const data = loadVideoStudyData(props.videoId);
+      const data = await loadVideoStudyDataAsync(props.videoId);
       setProgress(data.progress.watchedPercentage);
       setCompleted(data.progress.completed);
       setHasNotes(data.notes.length > 0);
-      setIsFav(isFavorite(props.videoId));
-      setIsQueued(isInWatchLater(props.videoId));
+      setIsFav(await isFavoriteAsync(props.videoId));
+      setIsQueued(await isInWatchLaterAsync(props.videoId));
     }
   });
 

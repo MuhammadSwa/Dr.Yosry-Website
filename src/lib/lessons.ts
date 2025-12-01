@@ -76,6 +76,21 @@ export const playlists: Playlist[] = [
     name: "شرح كتاب الإشارات الزروقيّة علی الآيات القرآنية",
     category: "تصوف",
   },
+  {
+    id: "PLEkQk5xrP-tlm5F9ID5I_--LMV7PcWjp_",
+    name: "شرح الحزب الكبير لسيدى أبي الحسن الشاذلي",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tkI_meE148wc7V7XHlB0WPb",
+    name: "من الحكم العطائية",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tnLYi_5_tSRVBwqcs7ISV7Y",
+    name: "شرح كتاب منازل السائرين للإمام الهروي",
+    category: "تصوف",
+  },
 
   // ============ عقيدة ============
   {
@@ -98,6 +113,21 @@ export const playlists: Playlist[] = [
     name: "شرح كتاب اتحاف الاذكياء بجواز التوسل بالأنبياء والأولياء",
     category: "عقيدة",
   },
+  {
+    id: "PLEkQk5xrP-tnI6h_R1hvYgrrstFAJCvv9",
+    name: "شرح الخريدة البهية",
+    category: "عقيدة",
+  },
+  {
+    id: "PLEkQk5xrP-tlaIFSMSnIOJlJRcxLeTosY",
+    name: "شرح رسالة التوحيد للعارف بالله الشيخ أرسلان الدمشقى",
+    category: "عقيدة",
+  },
+  {
+    id: "PLEkQk5xrP-tnBp9yUT_R2vtqSPOlcyAZe",
+    name: "برنامج عصمة الأنبياء",
+    category: "عقيدة",
+  },
 
   // ============ فقه ============
   {
@@ -118,6 +148,21 @@ export const playlists: Playlist[] = [
   {
     id: "PLEkQk5xrP-tnZyxWbCSqTSMV9BJLUL-zN",
     name: "شرح كتاب تنوير البصيرة ببيان علامات الكبيرة",
+    category: "فقه",
+  },
+  {
+    id: "PLEkQk5xrP-tnC6BRuqMjyO-484iqXeg0o",
+    name: "شرح كتاب الموطأ للإمام مالك",
+    category: "فقه",
+  },
+  {
+    id: "PLEkQk5xrP-tlyOgfNBZTZgoATzVW4mI20",
+    name: "كتاب فتح القريب المجيب (علم الفقه الشافعي)",
+    category: "فقه",
+  },
+  {
+    id: "PLEkQk5xrP-tkWS57Ubysh0ifJR8dmuEtE",
+    name: "شرح كتاب الأذكار للإمام النووي",
     category: "فقه",
   },
 
@@ -177,6 +222,31 @@ export const playlists: Playlist[] = [
     name: "شرح الحديث (١٦٠) حديث الإسراء والمعراج من كتاب بهجة النفوس",
     category: "حديث",
   },
+  {
+    id: "PLEkQk5xrP-tlEerGoLa1AFy-2XvQ-sovv",
+    name: "شرح صحيح البخاري (كاملا)",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tnu6of679SvxdVx0qSrJzmb",
+    name: "شرح سنن الإمام الترمذي",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tnzqzkOeEPbbPLsxgy-MYcW",
+    name: "شرح حديث سبعة يظلهم الله يوم القيامة في ظل عرشه - كتاب بهجة النفوس",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tnl7vb7KeAoPd5ZlqKKW8KV",
+    name: "شرح كتاب بهجة النفوس",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tmJuzaj4GWRenFoFx9gdbFX",
+    name: "شرح كتاب صحيح الإمام البخاري",
+    category: "حديث",
+  },
 
   // ============ تفسير / علوم القرآن ============
   {
@@ -204,6 +274,11 @@ export const playlists: Playlist[] = [
     name: "مقرأة الفجر - بداية من سورة الإسراء حتى سورة الناس",
     category: "تفسير",
   },
+  {
+    id: "PLEkQk5xrP-tnmTYsyW6xNdyfhPq0Bhrhj",
+    name: "مقرأة الفجر - القُرْآنُ الكَرِيمُ - خَتْمَةُ التَّدَبُّرِ",
+    category: "تفسير",
+  },
 
   // ============ سيرة ============
   {
@@ -224,6 +299,36 @@ export const playlists: Playlist[] = [
   {
     id: "PLEkQk5xrP-tmobcu_1bgkLNfeJXVsmjFZ",
     name: "شرح بردة الإمام البوصيري",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tloQiuCfhC2DE160-EZBhdz",
+    name: "مجموعة الشمائل المحمدية",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tkxpL07FfuZbVfwJKhAVbcE",
+    name: "عِقد اللول من سيرة الزهراء البتول",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tl2t4NQx1IhKnAJCMzF0Nli",
+    name: "شرح كتاب نور اليقين في سيرة سيد المرسلين",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tmhJ_gpAAFyOpEsHp0_VAJ-",
+    name: "برنامج اعرف نبيك في رمضان",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tl6Mu_Mz3QMUSv5T6XBH-Dg",
+    name: "برنامج اعرف نبيك",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tm74ioQU4BIuXLs8a9babvA",
+    name: "شرح كتاب الشمائل المحمدية للإمام الترمذى",
     category: "سيرة",
   },
 
@@ -253,6 +358,21 @@ export const playlists: Playlist[] = [
     name: "شرح صلوات مختارة على النبي ﷺ",
     category: "صلوات",
   },
+  {
+    id: "PLEkQk5xrP-tmuP5s2o33O9gAOC4ACxsma",
+    name: "صَلَواتُ الأَسْمَاءِ الْحُسْنَى شَرْحُ الصَّلَواتِ الْيُسْرِيَّةِ عَلَى خَيرِ الْبَرِيَّةِ",
+    category: "صلوات",
+  },
+  {
+    id: "PLEkQk5xrP-tlXZQuhEiJGJka1QcRw7fbW",
+    name: "شرح الصلوات الدرديرية لسيدي أحمد الدردير",
+    category: "صلوات",
+  },
+  {
+    id: "PLEkQk5xrP-tlB8lmbwjAKR8KRgiykGKhb",
+    name: "حضرات يسرية ومدائح نبوية",
+    category: "صلوات",
+  },
 
   // ============ ردود ============
   {
@@ -270,11 +390,31 @@ export const playlists: Playlist[] = [
     name: "كتاب النفحة الذكية في أن الهجر بدعة شركية",
     category: "ردود",
   },
+  {
+    id: "PLEkQk5xrP-tl5sZd_31jJw-5LldLW46Dv",
+    name: "كتاب الحق المبين في الرد على من تطاول على الدين",
+    category: "ردود",
+  },
 
   // ============ خطب ============
   {
     id: "PLEkQk5xrP-tnQB6107-Ua00lbndu0_Sti",
     name: "Voices of the Minbar | Friday Sermons",
+    category: "خطب",
+  },
+  {
+    id: "PLEkQk5xrP-tnTGoEr4TI_tnp8L7Ujv9dx",
+    name: "خطب العيد",
+    category: "خطب",
+  },
+  {
+    id: "PLEkQk5xrP-tmYN0y2PQUkx881GYBxD16g",
+    name: "درس الجمعة",
+    category: "خطب",
+  },
+  {
+    id: "PLEkQk5xrP-tlArtGpeLWaqNM7h7IDeAVC",
+    name: "خطب الجمعة",
     category: "خطب",
   },
 
@@ -292,6 +432,36 @@ export const playlists: Playlist[] = [
   {
     id: "PLEkQk5xrP-tl6tFiMFGUucCTvLgnWyAfz",
     name: "حياة الأستاذ الدكتور يسري جبر",
+    category: "متنوع",
+  },
+  {
+    id: "PLEkQk5xrP-tmJzNvLntpzW0uPanPzxA0c",
+    name: "لقاءات ومحاضرات",
+    category: "متنوع",
+  },
+  {
+    id: "PLEkQk5xrP-tm8ZIu74nTOZN9KJUJu416J",
+    name: "مقاطع مُهمَّة (يُسريَّات)",
+    category: "متنوع",
+  },
+  {
+    id: "PLEkQk5xrP-tknyGbcSBAVJFDqvkFJCtDq",
+    name: "فيلم وثائقي عن حقيقة الزمن ووجوده",
+    category: "متنوع",
+  },
+  {
+    id: "PLEkQk5xrP-tlJd4vTDfdmzoQf4xWWKMby",
+    name: "الاحتفال بالمولد النبوى الشريف 1437 - 1438",
+    category: "متنوع",
+  },
+  {
+    id: "PLEkQk5xrP-tna48sTO8GZ77fBCf3PgzNc",
+    name: "شرح القصيدة المنفرجة لابن النحوي",
+    category: "متنوع",
+  },
+  {
+    id: "PLEkQk5xrP-tnGIBX_2vhkIRBBnEr76KDk",
+    name: "احتفال مضيفة الشيخ إسماعيل صادق العدوى",
     category: "متنوع",
   },
 ];
