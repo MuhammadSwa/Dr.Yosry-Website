@@ -1,4 +1,4 @@
-import { createSignal, createMemo, For, Show, onMount } from "solid-js";
+import { createSignal, createMemo, For, Show, onMount, createEffect } from "solid-js";
 import type { PlaylistCategory, Playlist } from "../../lib/lessons";
 import type { TransformedVideo, PlaylistWithVideos } from "../../lib/videoLoader";
 import VideoProgressBadge from "./VideoProgressBadge";
@@ -20,6 +20,8 @@ interface LessonsAppProps {
 
 type ViewMode = "grid" | "list";
 type SortOption = "date" | "views" | "title";
+
+const VIDEOS_PER_PAGE_OPTIONS = [12, 24, 48, 96];
 
 // Helper function to parse ISO 8601 duration
 function parseDuration(duration?: string): string {
@@ -63,9 +65,29 @@ export default function LessonsApp(props: LessonsAppProps) {
   const [viewMode, setViewMode] = createSignal<ViewMode>("grid");
   const [sortBy, setSortBy] = createSignal<SortOption>("date");
   const [mounted, setMounted] = createSignal(false);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = createSignal(1);
+  const [videosPerPage, setVideosPerPage] = createSignal(24);
 
   onMount(() => {
     setMounted(true);
+    // Restore pagination preference from localStorage
+    const savedPerPage = localStorage.getItem("lessons_per_page");
+    if (savedPerPage) {
+      setVideosPerPage(parseInt(savedPerPage));
+    }
+  });
+
+  // Reset to page 1 when filters change
+  createEffect(() => {
+    // Track these dependencies
+    searchQuery();
+    selectedCategory();
+    selectedPlaylist();
+    sortBy();
+    // Reset to page 1
+    setCurrentPage(1);
   });
 
   // Navigate to video study page
@@ -123,6 +145,65 @@ export default function LessonsApp(props: LessonsAppProps) {
       }
     });
   });
+
+  // Pagination calculations
+  const totalPages = createMemo(() => Math.ceil(filteredVideos().length / videosPerPage()));
+  
+  const paginatedVideos = createMemo(() => {
+    const start = (currentPage() - 1) * videosPerPage();
+    const end = start + videosPerPage();
+    return filteredVideos().slice(start, end);
+  });
+
+  // Generate page numbers to display
+  const pageNumbers = createMemo(() => {
+    const total = totalPages();
+    const current = currentPage();
+    const pages: (number | "...")[] = [];
+    
+    if (total <= 7) {
+      // Show all pages if 7 or less
+      for (let i = 1; i <= total; i++) pages.push(i);
+    } else {
+      // Always show first page
+      pages.push(1);
+      
+      if (current > 3) {
+        pages.push("...");
+      }
+      
+      // Show pages around current
+      const start = Math.max(2, current - 1);
+      const end = Math.min(total - 1, current + 1);
+      
+      for (let i = start; i <= end; i++) {
+        if (!pages.includes(i)) pages.push(i);
+      }
+      
+      if (current < total - 2) {
+        pages.push("...");
+      }
+      
+      // Always show last page
+      if (!pages.includes(total)) pages.push(total);
+    }
+    
+    return pages;
+  });
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages()) {
+      setCurrentPage(page);
+      // Scroll to top of video grid
+      document.getElementById("video-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleVideosPerPageChange = (value: number) => {
+    setVideosPerPage(value);
+    setCurrentPage(1);
+    localStorage.setItem("lessons_per_page", value.toString());
+  };
 
   // Get playlists for selected category
   const categoryPlaylists = createMemo(() => {
@@ -290,15 +371,36 @@ export default function LessonsApp(props: LessonsAppProps) {
           {/* Video Grid */}
           <div class="flex-1">
             {/* Controls Bar */}
-            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div id="video-grid" class="flex flex-wrap items-center justify-between gap-4 mb-6 scroll-mt-24">
               <div class="text-emerald-300">
                 <span class="font-bold text-amber-400">{filteredVideos().length}</span> نتيجة
                 {searchQuery() && (
                   <span class="mr-2">للبحث عن "{searchQuery()}"</span>
                 )}
+                <Show when={totalPages() > 1}>
+                  <span class="mr-2 text-emerald-400">
+                    (صفحة {currentPage()} من {totalPages()})
+                  </span>
+                </Show>
               </div>
               
-              <div class="flex items-center gap-4">
+              <div class="flex flex-wrap items-center gap-4">
+                {/* Videos Per Page */}
+                <div class="flex items-center gap-2">
+                  <span class="text-emerald-400 text-sm">عرض:</span>
+                  <select
+                    value={videosPerPage()}
+                    onChange={(e) => handleVideosPerPageChange(parseInt(e.currentTarget.value))}
+                    class="bg-emerald-800 border border-emerald-600 rounded-lg px-3 py-2 text-emerald-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+                  >
+                    <For each={VIDEOS_PER_PAGE_OPTIONS}>
+                      {(option) => (
+                        <option value={option}>{option}</option>
+                      )}
+                    </For>
+                  </select>
+                </div>
+
                 {/* Sort Dropdown */}
                 <select
                   value={sortBy()}
@@ -350,7 +452,7 @@ export default function LessonsApp(props: LessonsAppProps) {
                     : "space-y-4"
                 }
               >
-                <For each={filteredVideos()}>
+                <For each={paginatedVideos()}>
                   {(video) => (
                     <Show when={viewMode() === "grid"} fallback={
                       /* List View */
@@ -432,6 +534,125 @@ export default function LessonsApp(props: LessonsAppProps) {
                   )}
                 </For>
               </div>
+
+              {/* Pagination Controls */}
+              <Show when={totalPages() > 1}>
+                <div class="mt-8 flex flex-col items-center gap-4">
+                  {/* Page Info */}
+                  <div class="text-emerald-400 text-sm">
+                    عرض {((currentPage() - 1) * videosPerPage()) + 1} - {Math.min(currentPage() * videosPerPage(), filteredVideos().length)} من {filteredVideos().length} فيديو
+                  </div>
+                  
+                  {/* Pagination Buttons */}
+                  <div class="flex flex-wrap items-center justify-center gap-2">
+                    {/* First Page */}
+                    <button
+                      onClick={() => goToPage(1)}
+                      disabled={currentPage() === 1}
+                      class={`p-2 rounded-lg transition-all ${
+                        currentPage() === 1
+                          ? "text-emerald-600 cursor-not-allowed"
+                          : "text-emerald-300 hover:bg-emerald-800 hover:text-amber-400"
+                      }`}
+                      title="الصفحة الأولى"
+                    >
+                      <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    {/* Previous Page */}
+                    <button
+                      onClick={() => goToPage(currentPage() - 1)}
+                      disabled={currentPage() === 1}
+                      class={`p-2 rounded-lg transition-all ${
+                        currentPage() === 1
+                          ? "text-emerald-600 cursor-not-allowed"
+                          : "text-emerald-300 hover:bg-emerald-800 hover:text-amber-400"
+                      }`}
+                      title="الصفحة السابقة"
+                    >
+                      <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    {/* Page Numbers */}
+                    <For each={pageNumbers()}>
+                      {(page) => (
+                        <Show
+                          when={page !== "..."}
+                          fallback={
+                            <span class="px-2 text-emerald-500">...</span>
+                          }
+                        >
+                          <button
+                            onClick={() => goToPage(page as number)}
+                            class={`min-w-[40px] h-10 rounded-lg font-medium transition-all ${
+                              currentPage() === page
+                                ? "bg-amber-500 text-emerald-950"
+                                : "text-emerald-300 hover:bg-emerald-800 hover:text-amber-400"
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        </Show>
+                      )}
+                    </For>
+
+                    {/* Next Page */}
+                    <button
+                      onClick={() => goToPage(currentPage() + 1)}
+                      disabled={currentPage() === totalPages()}
+                      class={`p-2 rounded-lg transition-all ${
+                        currentPage() === totalPages()
+                          ? "text-emerald-600 cursor-not-allowed"
+                          : "text-emerald-300 hover:bg-emerald-800 hover:text-amber-400"
+                      }`}
+                      title="الصفحة التالية"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    {/* Last Page */}
+                    <button
+                      onClick={() => goToPage(totalPages())}
+                      disabled={currentPage() === totalPages()}
+                      class={`p-2 rounded-lg transition-all ${
+                        currentPage() === totalPages()
+                          ? "text-emerald-600 cursor-not-allowed"
+                          : "text-emerald-300 hover:bg-emerald-800 hover:text-amber-400"
+                      }`}
+                      title="الصفحة الأخيرة"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Quick Jump */}
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class="text-emerald-400">انتقل إلى:</span>
+                    <input
+                      type="number"
+                      min="1"
+                      max={totalPages()}
+                      value={currentPage()}
+                      onChange={(e) => {
+                        const page = parseInt(e.currentTarget.value);
+                        if (page >= 1 && page <= totalPages()) {
+                          goToPage(page);
+                        }
+                      }}
+                      class="w-16 px-2 py-1 bg-emerald-800 border border-emerald-600 rounded text-center text-emerald-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                    <span class="text-emerald-500">من {totalPages()}</span>
+                  </div>
+                </div>
+              </Show>
             </Show>
           </div>
         </div>

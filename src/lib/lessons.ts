@@ -1,4 +1,4 @@
-export type PlaylistCategory = "تصوف" | "فقه" | "تفسير" | "حديث" | "عقيدة" | "سيرة" | "متنوع";
+export type PlaylistCategory = "تصوف" | "فقه" | "تفسير" | "حديث" | "عقيدة" | "سيرة" | "متنوع" | "ردود" | "صلوات" | "خطب";
 
 export interface Playlist {
   id: string;
@@ -25,27 +25,272 @@ export const playlists: Playlist[] = [
   // ============ تصوف ============
   {
     id: "PLEkQk5xrP-tly7ti7Qb_lS7xjUg_fwlNP",
-    name: "دروس التصوف",
+    name: "شرح كتاب الدولة المكية بالمادة الغيبية",
     category: "تصوف",
-    description: "شرح أصول التصوف والسلوك الروحي",
   },
-  
-  // ============ فقه ============
   {
     id: "PLEkQk5xrP-tmsEDdkkXMM1ca2-AquQYad",
-    name: "دروس الفقه",
-    category: "فقه",
-    description: "شرح المسائل الفقهية والأحكام الشرعية",
+    name: "شرح كتاب مدارج الحقيقة في الرابطة عند أهل الطريقة",
+    category: "تصوف",
   },
-  
-  // ============ Add more playlists below ============
-  // Example:
-  // {
-  //   id: "PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  //   name: "اسم القائمة",
-  //   category: "تفسير",
-  //   description: "وصف اختياري",
-  // },
+  {
+    id: "PLEkQk5xrP-tmiUfQ-2Tsn7QIak4EsvaZW",
+    name: "كتاب التيسير المعين بشرح معاني منازل السائرين",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tnpkdZki6rPTtMak1bnI5g-",
+    name: "شرح كتاب مختصر الفتوحات المكية (لواقح الأنوار القدسية)",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tmf5ToOwmW-q0JwxkapbrMN",
+    name: "شرح كتاب إرشاد البرية إلى بعض معاني الحكم العطائية",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tkHAGOwIKr4pc5ehhyQ5HMJ",
+    name: "كتاب الرسالة القشيرية",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tmmI87XkWepRdTpisz2Lfgr",
+    name: "باب في ذكر مشايخ هذه الطريقة من شرح كتاب الرسالة القشيرية",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tk3OeVFoMfKhOhyINnlPeYZ",
+    name: "الحَضْرَةُ الصِّدِّيقِيَّة والأوْرَاد",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tnzc5Igd5ZE8_G2H6afJ4L5",
+    name: "مجالس رحلة سيدي أبي الحسن الشاذلي",
+    category: "تصوف",
+  },
+  {
+    id: "PLEkQk5xrP-tl1OLT5J2vthcf9QHpjNkWx",
+    name: "شرح كتاب الإشارات الزروقيّة علی الآيات القرآنية",
+    category: "تصوف",
+  },
+
+  // ============ عقيدة ============
+  {
+    id: "PLEkQk5xrP-tmNuYT8JAh6clwa4krsgkNo",
+    name: "شرح كتاب الفُتُوحات اليُسريَّة في عقائد الأُمَّة المُحمَّديَّة",
+    category: "عقيدة",
+  },
+  {
+    id: "PLEkQk5xrP-tkD_AX8yqxtDm_BTp877wi6",
+    name: "شرح منظومة منجية العبيد في علم التوحيد",
+    category: "عقيدة",
+  },
+  {
+    id: "PLEkQk5xrP-tlc2t-K4tRFtzhmE-e6jziG",
+    name: "شرح عقيدة العوام",
+    category: "عقيدة",
+  },
+  {
+    id: "PLEkQk5xrP-tm5wKaFaltLbztkXrGxixKu",
+    name: "شرح كتاب اتحاف الاذكياء بجواز التوسل بالأنبياء والأولياء",
+    category: "عقيدة",
+  },
+
+  // ============ فقه ============
+  {
+    id: "PLEkQk5xrP-tkXuPs-0sXfWQDWzBKmcjWN",
+    name: "فتح القريب المجيب في شرح ألفاظ التقريب (فقه شافعيّ)",
+    category: "فقه",
+  },
+  {
+    id: "PLEkQk5xrP-tnXN9VywgB4qmBFO8geIZTV",
+    name: "أحكام الحج من كتاب فتح القريب المجيب",
+    category: "فقه",
+  },
+  {
+    id: "PLEkQk5xrP-tkeI_WVPfuoTJO46aVkpaz0",
+    name: "شرح كتاب ميزان الاعتدال لحفظ الدين والأحوال",
+    category: "فقه",
+  },
+  {
+    id: "PLEkQk5xrP-tnZyxWbCSqTSMV9BJLUL-zN",
+    name: "شرح كتاب تنوير البصيرة ببيان علامات الكبيرة",
+    category: "فقه",
+  },
+
+  // ============ حديث ============
+  {
+    id: "PLEkQk5xrP-tkKprIuGrSdEuBSMsyg5We1",
+    name: "شرح مسند الإمام أحمد بن حنبل",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tk_MCBZ706ORCw6gFtFyaGj",
+    name: "شرح سنن الإمام الدارقطني",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tmAg-FuWjY057X_h5NmGmAa",
+    name: "شرح سنن الدارمي (كاملا)",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tlDtaqY0qhNXAiZ19gaGzKI",
+    name: "شرح مسند الإمام محمد بن إدريس الشافعيّ",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tmKNjtYLfhATC37QdIsTMe0",
+    name: "شرح كتاب اللؤلؤ والمرجان فيما اتفق عليه الشيخان",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tmHtx4cjd_IK-SgBg00N_ZN",
+    name: "الأربعون النووية",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tkc9DXvSLguqX5-FYp6ASR4",
+    name: "دليل الفالحين لطرق رياض الصالحين",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tkKcTKLIthzWrdXY7QaOjh_",
+    name: "قراءة صحيح البخاري كاملاً في إندونيسيا",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tlyEB2iywk4VchTQROnBrU6",
+    name: "بهجة النفوس من أوله",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tlhpr-bJBjCsJw3j1S-LD9B",
+    name: "كتابُ الأدَبِ - المجلس الأول",
+    category: "حديث",
+  },
+  {
+    id: "PLEkQk5xrP-tkxPmHx3gvtTmm9g4hFTw7Q",
+    name: "شرح الحديث (١٦٠) حديث الإسراء والمعراج من كتاب بهجة النفوس",
+    category: "حديث",
+  },
+
+  // ============ تفسير / علوم القرآن ============
+  {
+    id: "PLEkQk5xrP-tlKBnMFB7ry6dhZC6YzNtAq",
+    name: "شرح كتاب يسر البيان قراءة في كتاب التبيان في آداب حملة القرآن",
+    category: "تفسير",
+  },
+  {
+    id: "PLEkQk5xrP-tlPw10KGJKagu7zm4Ry2Tge",
+    name: "شرح الإتقان في علوم القرآن",
+    category: "تفسير",
+  },
+  {
+    id: "PLEkQk5xrP-tnW3iBL7HkKziOFCFZbTlf0",
+    name: "شرح البرهان في علوم القرآن",
+    category: "تفسير",
+  },
+  {
+    id: "PLEkQk5xrP-tkSGrPLMt1BEmJ54cGWYgtp",
+    name: "كتابُ بِدَعِ التَفَاسِيرِ",
+    category: "تفسير",
+  },
+  {
+    id: "PLEkQk5xrP-tnUSUj0uyJhA-kwNC7Gkx_j",
+    name: "مقرأة الفجر - بداية من سورة الإسراء حتى سورة الناس",
+    category: "تفسير",
+  },
+
+  // ============ سيرة ============
+  {
+    id: "PLEkQk5xrP-tlnvX_MSpJzq0sTimnumdYK",
+    name: "كيف تعرفُ نبيّك؟",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tkCtkJ_fVpP3CmkJhWYYZtt",
+    name: "قراءةُ كتابِ الشَّمَائِلِ المُحَمَّدِيَّة للإِمام التِّرمذيّ",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tkUKP083yQli9ADnyTpMmgU",
+    name: "شرح كتاب الآية الكبرى في الإسراء والعراج",
+    category: "سيرة",
+  },
+  {
+    id: "PLEkQk5xrP-tmobcu_1bgkLNfeJXVsmjFZ",
+    name: "شرح بردة الإمام البوصيري",
+    category: "سيرة",
+  },
+
+  // ============ صلوات على النبي ﷺ ============
+  {
+    id: "PLEkQk5xrP-tk92TNE3xhWCFNr9VshA9Zj",
+    name: "الصلوات اليسرية على خير البرية ﷺ",
+    category: "صلوات",
+  },
+  {
+    id: "PLEkQk5xrP-tnAXVT9Huen-nNMlvs5w6UI",
+    name: "دلائل الخيرات و شوارق الأنوار في ذكر الصلاة على النَّبيّ المختار ﷺ",
+    category: "صلوات",
+  },
+  {
+    id: "PLEkQk5xrP-tkFEtMu56Xb9U9FCZBTXiLf",
+    name: "شرح صلوات الأولياء على خاتم الأنبياء ﷺ",
+    category: "صلوات",
+  },
+  {
+    id: "PLEkQk5xrP-tlAzcbIpuqjdFICW-knvTlR",
+    name: "شرح كتاب دلائل الخيرات وشوارق الأنوار",
+    category: "صلوات",
+  },
+  {
+    id: "PLEkQk5xrP-tknLQLcWmVVpecUHkbu7cHh",
+    name: "شرح صلوات مختارة على النبي ﷺ",
+    category: "صلوات",
+  },
+
+  // ============ ردود ============
+  {
+    id: "PLEkQk5xrP-tlG4r6Zxis5AqEnE9aNyJdV",
+    name: "الرد على المعترضين على د. يسري جبر",
+    category: "ردود",
+  },
+  {
+    id: "PLEkQk5xrP-tle_3XnHjhmEc-uhNO000kx",
+    name: "الرد على الوهابية",
+    category: "ردود",
+  },
+  {
+    id: "PLEkQk5xrP-tnAJa3yfebXD7wNC_ECfZNt",
+    name: "كتاب النفحة الذكية في أن الهجر بدعة شركية",
+    category: "ردود",
+  },
+
+  // ============ خطب ============
+  {
+    id: "PLEkQk5xrP-tnQB6107-Ua00lbndu0_Sti",
+    name: "Voices of the Minbar | Friday Sermons",
+    category: "خطب",
+  },
+
+  // ============ متنوع ============
+  {
+    id: "PLEkQk5xrP-tldWjDFs_8nrqZBMYoSiPq7",
+    name: "برنامج مدد",
+    category: "متنوع",
+  },
+  {
+    id: "PLEkQk5xrP-tkGXuZ9atE3k_7it12rUPTs",
+    name: "أسئلة المتابعين",
+    category: "متنوع",
+  },
+  {
+    id: "PLEkQk5xrP-tl6tFiMFGUucCTvLgnWyAfz",
+    name: "حياة الأستاذ الدكتور يسري جبر",
+    category: "متنوع",
+  },
 ];
 
 /**
@@ -53,11 +298,14 @@ export const playlists: Playlist[] = [
  */
 export const categories: PlaylistCategory[] = [
   "تصوف",
-  "فقه", 
-  "تفسير",
-  "حديث",
   "عقيدة",
+  "فقه",
+  "حديث",
+  "تفسير",
   "سيرة",
+  "صلوات",
+  "ردود",
+  "خطب",
   "متنوع",
 ];
 
